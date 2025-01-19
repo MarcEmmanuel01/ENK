@@ -3,60 +3,242 @@
 {% block content %}
 
 <style>
-    img{box-shadow: 0px 2px 15px 2px rgba(0, 0, 0, 0.3);}
+    .product-container {
+        max-width: 750px;
+        margin: 30px auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-title {
+        font-size: 30px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .product-meta {
+        font-size: 13px;
+        color: #777;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .btn-wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .btn-back,
+    .btn-cart-link {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .btn-back {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-back:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-cart-link {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .btn-cart-link:hover {
+        background-color: #e0a800;
+    }
+
+    .product-image {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .product-image img {
+        max-width: 90%;
+        border-radius: 8px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-details {
+        font-size: 14px;
+        color: #444;
+        line-height: 1.6;
+    }
+
+    .price-wrapper {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .price {
+        font-size: 20px;
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .dismiss-text {
+        font-size: 14px;
+        text-decoration: line-through;
+        color: #dc3545;
+        margin-right: 10px;
+    }
+
+    .size-color-wrapper {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .custom-select {
+        padding: 6px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .form-product-ajax {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .form-product-ajax input[type="number"] {
+        width: 60px;
+        padding: 5px;
+        font-size: 14px;
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .form-product-ajax button {
+        margin-top: 10px;
+        padding: 8px 14px;
+        font-size: 14px;
+        border-radius: 5px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    @media (max-width: 768px) {
+        .size-color-wrapper {
+            flex-direction: column;
+        }
+
+        .product-image img {
+            max-width: 100%;
+        }
+    }
 </style>
 
-<div class="container">
+<div class="product-container">
+    <!-- Boutons en haut -->
+    <div class="btn-wrapper">
+        <a href="{% url 'product_list' %}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        <a href="{% url 'cart' %}" class="btn-cart-link">
+            <i class="fas fa-shopping-cart"></i> Panier
+        </a>
+    </div>
 
-    <div class="title-1">{{ object.title|title }}</div>
-    <div class="title-line mb-1"></div>
-    
-    <p><i class="fas fa-calendar-alt mr-3"></i>{{ object.timestamp|timesince }} ago</p>
-    <div class='row bg-light py-4 px-3'>
-        <div class='col-md-6'>
+    <!-- Titre et métadonnées -->
+    <div class="product-title">{{ object.title|title }}</div>
+    <div class="product-meta">
+        <i class="fas fa-calendar-alt"></i> Publié il y a {{ object.timestamp|timesince }}
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="row">
+        <!-- Image du produit -->
+        <div class="col-md-6 product-image">
             {% if object.image %}
-                <img src='{{ object.image.url }}' class='img-fluid'>
+                <img src="{{ object.image.url }}" alt="{{ object.title }}">
             {% endif %}
         </div>
-        <div class="col-md-6">
-            
-            <strong>Brand : </strong>{{ object.brand }}
-            <div class="mt-1">
-                <span class="price fs-5">$ {{ object.price }}</span>
-                {% if object.discount_price %}<span class="dismiss-text"> $ {{ object.discount_price }}</span>{% endif %}
-            </div>
-            <div class="size-color-wrapper">
-                <label for="" >Size
-                    <select name="" id="" class="custom-select">
-                        <option value="">xxx</option>
-                    </select>
-                </label>
-                <label for="">Color
-                    <select name="" id="" class="custom-select">
-                        <option value="">red</option>
-                    </select>
-                </label>
-            </div>
-            
-            <div class="mb-4">{{ object.description|linebreaks }}</div>
-            
-            <form class='form-product-ajax' method='POST' action='{% url "update" %}' data-endpoint='{% url "update" %}' class="form" {% if request.user.is_authenticated %}data-user='abc'{% endif %}> {% csrf_token %}
-                <input type='hidden' name='product_id' value='{{ product.id }}' {% if  product.is_digital %}data-is-digital='true'{% endif%}/>
-                <span class='submit-span'>
-                {% if product in cart.products.all %}
-                    <button type='submit'  class='btn btn-danger'>
-                        <i class="fa fa-shopping-cart"></i>Remove from cart
-                    </button>
-                {% else %}
-                    <button type='submit'  class='btn btn-success'>
-                        <i class="fa fa-shopping-cart"></i>Add to cart
-                    </button>
+
+        <!-- Détails du produit -->
+        <div class="col-md-6 product-details">
+            <!-- Marque -->
+            <p><strong>Marque :</strong> {{ object.brand }}</p>
+
+            <!-- Prix -->
+            <div class="price-wrapper">
+                {% if object.discount_price %}
+                    <span class="dismiss-text">{{ object.discount_price }} FCFA</span>
                 {% endif %}
-                </span>
+                <span class="price">{{ object.price }} FCFA</span>
+            </div>
+
+            <!-- Taille et couleur -->
+            <div class="size-color-wrapper">
+                <label for="size">Taille:</label>
+                <select name="size" id="size" class="custom-select">
+                    <option value="">Choisir</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+
+                <label for="color">Couleur:</label>
+                <select name="color" id="color" class="custom-select">
+                    <option value="">Choisir</option>
+                    <option value="Rouge">Rouge</option>
+                    <option value="Bleu">Bleu</option>
+                    <option value="Vert">Vert</option>
+                    <option value="Noir">Noir</option>
+                </select>
+            </div>
+
+            <!-- Description -->
+            <p class="mt-3">{{ object.description|linebreaks }}</p>
+
+            <!-- Formulaire -->
+            <form method="POST" action="{% url 'add_to_cart' %}" class="form-product-ajax">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ object.id }}">
+
+                <!-- Nombre -->
+                <label for="quantity">Nombre:</label>
+                <input type="number" name="quantity" id="quantity" value="1" min="1" max="100">
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-shopping-cart"></i> Ajouter au panier
+                    </button>
+                </div>
             </form>
-
         </div>
-
     </div>
-</div><br><br>
+</div>
 {% endblock content %}

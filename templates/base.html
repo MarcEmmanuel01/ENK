@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +10,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/font-face.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
-
-    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/green.css' %}">
-    
 </head>
 <body>
     {% url 'home' as home_url %}
-    <!-- {% url 'products' as product_list_url %} -->
     {% url 'contact' as contact_url %}
     {% url 'about' as about_url %}
     {% url 'login' as login_url %}
@@ -29,36 +25,34 @@
       <div class="container-fluid">
         <div class="nav-wrapper">
         <ul class="navbar-nav">
-          <li><a href="#0924419094"><i class="fas fa-phone"></i>+(251) 90 054 1535</a></li>
-          <li><a href="mailto:adilmohak123@gmail.com"><i class="fas fa-envelope ml-3"></i>adilmohak123@gmail.com</a></li>
-          <li><a href="#"><i class="fas fa-map-marker ml-3"></i>Adama</a></li>
+          <li><a href="#0924419094"><i class="fas fa-phone"></i> +(225) 07 59 96 24 96</a></li>
+          <li><a href="mailto:support@ecommerce.fr"><i class="fas fa-envelope ml-3"></i>ENK@gmail.com</a></li>
+          <li><a href="#"><i class="fas fa-map-marker ml-3"></i>Abidjan</a></li>
         </ul>
         <ul class="navbar-nav">
           {% if request.user.is_authenticated %}
-          
           <li class="nav-item dropdown mr-3 p-0">
             <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDropdownUserPanel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ request.user.get_full_name }}
             </a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdownUserPanel">
-              <a class="dropdown-item {% if request.path == account_url %}active{% endif %}" href="#">Profile</a>
-              <a class="dropdown-item" href="#">Billing</a>
-              <a class="dropdown-item" href="#">History</a>
-              <a class="dropdown-item" href="#">Library</a>
+              <a class="dropdown-item" href="#">Profil</a>
+              <a class="dropdown-item" href="#">Facturation</a>
+              <a class="dropdown-item" href="#">Historique</a>
+              <a class="dropdown-item" href="#">Bibliothèque</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{{ logout_url }}">Logout</a>
+              <a class="dropdown-item" href="{{ logout_url }}">Se déconnecter</a>
             </div>
           </li>
-
           <li>
-            <a href="{{ logout_url }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
+            <a href="{{ logout_url }}"><i class="fas fa-sign-out-alt"></i>Se déconnecter</a>
           </li>
           {% else %}
           <li class="active mr-3">
-            <a href="{{ register_url }}"><i class="fas fa-user-plus"></i>Register</a>
+            <a href="{{ register_url }}"><i class="fas fa-user-plus"></i>Inscription</a>
           </li>
           <li>
-            <a href="{{ login_url }}"><i class="fas fa-sign-in-alt"></i>Login</a>
+            <a href="{{ login_url }}"><i class="fas fa-sign-in-alt"></i>Connexion</a>
           </li>
           {% endif %}
         </ul>
@@ -69,79 +63,39 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
        <div class='container-fluid'>
       <a class="navbar-brand" href="{% url 'home' %}">
-        <img src="{% static 'img/apple-touch-icon.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
-         <!-- Trade<strong>Storm</strong> -->
-         <strong>eCommerce</strong>
+        <img src="{% static 'img/1.png' %}" width="50" height="40" class="d-inline-block align-top" alt="">
+        <strong></strong>
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item {% if request.path == home_url %}active{% endif %}">
-            <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'home' %}">Accueil</a>
+                <!-- Lien vers la page des produits -->
+              <li class="nav-item {% if request.path == '/products/' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'products' %}">Produits</a>
+              </li>
           </li>
-          <!-- <li class="nav-item {% if request.path == product_list_url %}active{% endif %}">
-            <a class="nav-link" href="{% url 'products' %}">Products</a>
-          </li> -->
-          <li class="nav-item {% if request.path == contact_url %}active{% endif %}">
-            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
-          </li>
-          <li class="nav-item {% if request.path == about_url %}active{% endif %}">
-            <a class="nav-link" href="{% url 'about' %}">About</a>
-          </li>
-    
-          <!-- {% if request.user.is_authenticated %}
-          <li class="nav-item {% if request.path == logout_url %}active{% endif %}">
-            <a class="nav-link" href="{{ logout_url }}">Logout</a>
-          </li>
-           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Account
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item {% if request.path == account_url %}active{% endif %}" href="#">Home</a>
-              <a class="dropdown-item" href="#">Billing</a>
-              <a class="dropdown-item" href="#">History</a>
-              <a class='dropdown-item' href='#'>Library</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{{ logout_url }}">Logout</a>
-            </div>
-          </li>
-          {% else %}
-           <li class="nav-item {% if request.path == register_url %}active{% endif %}">
-            <a class="nav-link" href="{{ register_url }}">Register</a>
-          </li>
-          <li class="nav-item {% if request.path == login_url %}active{% endif %}">
-            <a class="nav-link" href="{{ login_url }}">Login</a>
-          </li>
-          {% endif %} -->
-    
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              ...More
-            </a>
-            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">Gallary</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-            
-          <li class="nav-item {% if request.path == cart_url %}active{% endif %}">
-            <a class="nav-link" href="{{ cart_url }}">
-              <div class="cart">
-                <span class='cart_count' id="cart-item-counter"></span> 
-                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-              </div>
-            </a>
-          </li>
+              <li class="nav-item {% if request.path == cart_url %}active{% endif %}">
+                <a class="nav-link" href="{{ cart_url }}">
+                  <span>Panier d'achat</span> <!-- Juste le texte sans icône ni cercle -->
+                </a>
+              </li>          
+      <li class="nav-item {% if request.path == contact_url %}active{% endif %}">
+        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+      </li>
+  <li class="nav-item {% if request.path == about_url %}active{% endif %}">
+    <a class="nav-link" href="{% url 'about' %}">À propos</a>
+  </li>
+</ul>
 
         </ul>
 
         <form class="form-header" action="{% url 'query' %}" method="GET">
-          <input class="au-input au-input--xl" type="text" name="q" aria-label="Search" value="{{ request.GET.q }}" placeholder="Search for products..." required/>
+          <input class="au-input au-input--xl" type="text" name="q" aria-label="Recherche" value="{{ request.GET.q }}" placeholder="Recherchez des produits..." required/>
           <button class="au-btn--submit" type="submit">
               <i class="fas fa-search"></i>
           </button>
@@ -153,153 +107,67 @@
 
     {% block content %}{% endblock content %}
 
-  <section class="bg-light py-5" style="border-top: 2px solid #ddd;">
-    <div class="container" style="display: flex; justify-content: center;">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <p class="lead">Sign Up for the <b>NEWSLETTER</b></p>
-                <form class="form-header" action="" method="GET">
-                    <input class="au-input au-input--xl" type="text" name="" aria-label="" value="" placeholder="E-mail" required/>
-                    <button class="au-btn--submit" type="submit">Subscribe</button>
-                </form>
-                <p>Subscribe our website so you will get new products...</p>
-            </div>
-        </div>
-    </div>
+    <section class="bg-light py-5" style="border-top: 2px solid #ddd;">
+      <div class="container" style="display: flex; justify-content: center;">
+          <div class="row">
+              <div class="col-md-12 text-center">
+                  <p class="lead">Inscrivez-vous à notre <b>NEWSLETTER</b></p>
+                  <form class="form-header" action="{% url 'subscribe' %}" method="POST">
+                      {% csrf_token %}
+                      <input class="au-input au-input--xl" type="email" name="email" aria-label="email" value="" placeholder="E-mail" required />
+                      <button class="au-btn--submit" type="submit">S'abonner</button>
+                  </form>
+                  <p>Abonnez-vous à notre site pour recevoir nos nouveaux produits...</p>
+  
+                  <!-- Messages de feedback -->
+                  {% if messages %}
+                      {% for message in messages %}
+                          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                      {% endfor %}
+                  {% endif %}
+              </div>
+          </div>
+      </div>
   </section>
+  
 
-  <!-- <footer class="card-footer"> -->
+  <footer>
     <section id="top-footer">
       <div class="container">
         <div class="row py-5 px-4">
           <div class="col-md-4">
             <ul>
-              <h5>ABOUT US</h5>
-              <li class="mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</li>
-              <li><i class="fas fa-map-marker"></i>1734 Stonecoal Road</li>
-              <li><i class="fas fa-phone"></i>+021-95-51-84</li>
-              <li><i class="fas fa-envelope"></i>email@email.com</li>
+              <h5>À PROPOS DE NOUS</h5>
+              <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>              
+              <li><i class="fas fa-map-marker"></i>Abidjan , Cocody ABATTA</li>
+              <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
+              <li><i class="fas fa-envelope"></i>ENK@gmail.com</li>
             </ul>
           </div>
           <div class="col-md-2 mr-3">
             <ul>
               <h5>CATEGORIES</h5>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Other</a></li>
-              <li><a href="#">Other</a></li>
-              <li><a href="#">Other</a></li>
-            </ul>
-          </div>
-          <div class="col-md-2 mr-3">
-            <ul>
-              <h5>INFORMATION</h5>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Other</a></li>
-              <li><a href="#">Other</a></li>
-              <li><a href="#">Other</a></li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <ul>
-              <h5>SERVICE</h5>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Other</a></li>
-              <li><a href="#">Other</a></li>
-              <li><a href="#">Other</a></li>
-            </ul>
+              <li><a href="{% url 'home' %}">Accueil</a></li>
+              <li><a href="{% url 'about' %}">À propos</a></li>
+              <li><a href="{% url 'contact' %}">Contact</a></li>
+              <li><a href="{% url 'products' %}">Produits</a></li>
+              <li><a href="{% url 'cart' %}">Panier</a></li>
+          </ul>
           </div>
         </div>
       </div>
     </section>
-
     <section class="py-5" id="bottom-footer">
-      <div class="container">
-        <!-- row -->
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <span class="copyright">
-              Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This website is made by <a href="https://ezop.herokuapp.com" target="_blank">CodeAdil.com</a>
-            </span>
-          </div>
-        </div>
-          <!-- /row -->
+      <div class="container text-center">
+        <span class="copyright">
+          Copyright &copy; <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a href="https://ezop.herokuapp.com" target="_blank">Kassi Marc</a>
+        </span>
       </div>
     </section>
+  </footer>
 
-  <!-- </footer> -->
-
-  <!-- Bootstrap JS-->
   <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-  <!-- <script src="{% static 'js/bootstrap.js' %}"></script> -->
   <script src="{% static 'js/js/bootstrap.bundle.min.js' %}"></script>
-
-<!-- Main JS-->
   <script src="{% static 'js/main.js' %}"></script>
-
-  <script>  
-    function getCartItemLength() {
-      $.ajax({
-        type: 'GET',
-        url: `{% url 'items_count' %}`,
-        // data: {"nick_name": nick_name},
-        // headers: {'Authorization': 'Token 679b665fd784ac2c0627bc4903fe6b49c9ba9392'},
-        success: function (response) {
-          $('#cart-item-counter').html(response.counter);
-        },
-        error: function (response) {
-          console.log(response)
-        }
-      })
-    }
-    getCartItemLength()
-    
-  $('.form-product-ajax').submit(function (e) {
-    e.preventDefault();
-    // console.log($(this).children('button'));
-    const button = $(this).children('button');
-    console.log("---------------------submited-----------------------")
-    // preventing from page reload and default actions
-    // serialize the data for sending the form data.
-    var serializedData = $(this).serialize();
-    // make POST ajax call
-    $.ajax({
-        type: 'POST',
-        url: "{% url 'update' %}",
-        data: serializedData,
-        success: function (res) {
-          getCartItemLength()
-          // on successfull creating object
-          console.log(res.added)
-          if(res.added == false) {
-            console.log("yes it's false")
-            $(button).removeClass('btn-outline-danger')
-
-            $(button).addClass('btn-outline-success')
-            $(button).text("Add To Cart")
-          }
-          else {
-            $(button).removeClass('btn-outline-success')
-            $(button).addClass('btn-outline-danger')
-            $(button).text("Remove From Cart")
-          }
-          console.log(res)
-          // $(button).css({''})
-        },
-        error: function (res) {
-          // alert the error if any error occured
-          alert(res["responseJSON"]["error"]);
-        }
-    })
-  })
-  </script>
-
-  {% block js %}{% endblock js %}
-
 </body>
 </html>

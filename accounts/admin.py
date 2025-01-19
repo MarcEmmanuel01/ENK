@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-
+from .models import ContactMessage
 from .models import *
 
 
@@ -17,3 +17,13 @@ admin.site.register(User, UserAdmin)
 # admin.site.register(Student)
 
 admin.site.unregister(Group)
+
+
+
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ("fullname", "email", "created_at")
+    search_fields = ("fullname", "email")
+

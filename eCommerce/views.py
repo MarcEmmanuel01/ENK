@@ -18,17 +18,21 @@ from django.views.generic import ListView
 from django.shortcuts import render
 from products.models import Product
 from carts.models import Cart
+from django.views.generic import TemplateView  # Ajoutez cette ligne
 
 
-class HomePage(ListView):
-    model = Product
+
+class HomePage(TemplateView):
     template_name = "home_page.html"
     
+
     def get_context_data(self, *args, **kwargs):
         context = super(HomePage, self).get_context_data(*args, **kwargs)
         cart_obj, new_obj = Cart.objects.new_or_get(self.request)
         context['cart'] = cart_obj
+        # Ne pas ajouter d'articles au contexte
         return context
+
 
 
 def about_page(request):
@@ -36,6 +40,10 @@ def about_page(request):
         "title": "About Page"
     }
     return render(request, "about_page.html", context)
+
+
+
+
 
 def contact_page(request):
     contact_form = ContactForm(request.POST or None)
@@ -45,17 +53,16 @@ def contact_page(request):
     }
     if contact_form.is_valid():
         print(contact_form.cleaned_data)
-        if request.is_ajax():
-            return JsonResponse({"message": "Thank you for your submission"})
+        # Vérifie si la requête est AJAX
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({"message": "Thank you for your submission"}, status=200)
 
     if contact_form.errors:
         errors = contact_form.errors.as_json()
-        if request.is_ajax():
+        # Vérifie si la requête est AJAX
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return HttpResponse(errors, status=400, content_type='application/json')
 
-    # if request.method == "POST":
-    #     #print(request.POST)
-    #     print(request.POST.get('fullname'))
-    #     print(request.POST.get('email'))
-    #     print(request.POST.get('content'))
     return render(request, "contact_page.html", context)
+
+

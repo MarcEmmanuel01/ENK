@@ -22,3 +22,24 @@ def tag_pre_save_receiver(sender, instance, *args, **kwargs):
         instance.slug = unique_slug_generator(instance)
 
 pre_save.connect(tag_pre_save_receiver, sender=Tag)
+
+
+
+class ContactMessage(models.Model):
+    fullname = models.CharField(max_length=100)
+    email = models.EmailField()
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message de {self.fullname} ({self.email})"
+
+
+
+
+class Newsletter(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email

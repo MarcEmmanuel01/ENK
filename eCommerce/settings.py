@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'tags',
     'carts',
     'crispy_forms',
+    'crispy_bootstrap5',
+    
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'eCommerce.wsgi.application'
 
 
@@ -85,10 +89,19 @@ WSGI_APPLICATION = 'eCommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mon_appli_ecommerce',  # Database name
+        'USER': 'admin',               # Username
+        'PASSWORD': '123456789',   # Password
+        'HOST': 'localhost',           # Database host
+        'PORT': '5432',                # Port (default for PostgreSQL)
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        },
     }
 }
+
+
 
 
 # Password validation
@@ -153,8 +166,11 @@ DEFAULT_FROM_EMAIL = ''
 SERVER_EMAIL = ''
 EMAIL_HOST_PASSWORD = ''
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+
 
 LOGIN_REDIRECT_URL = '/'
 
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'home'

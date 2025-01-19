@@ -3,9 +3,7 @@ from django.db import transaction
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
-
 from .models import *
-
 
 class RegistrationForm(UserCreationForm):
     username = forms.CharField(
@@ -91,3 +89,16 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
             self.add_error('email', msg)
             return email
 # ###########################################################
+
+
+
+class ContactForm(forms.Form):
+    fullname = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom complet"})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "Adresse email"})
+    )
+    content = forms.CharField(
+        widget=forms.Textarea(attrs={"class": "form-control", "placeholder": "Votre message..."})
+    )

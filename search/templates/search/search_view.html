@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
- <div class='row  mb-3'>
+ <div class='row mb-3'>
     {% if query %}
-    <div class='col-12' >
-        ({{ obj_counter }}) Results for <b><i>"{{ query }}"</i></b>
+    <div class='col-12'>
+        ({{ obj_counter }}) Résultats pour <b><i>"{{ query }}"</i></b>
         <hr/>
     </div>
     {% else %}
@@ -12,7 +12,7 @@
     <div class='col-12 col-md-6 mx-auto py-5'>
 
         <form class="form-header" action="{% url 'query' %}" method="GET">
-            <input class="au-input au-input--xl" type="text" name="q" aria-label="Search" value="{{ request.GET.q }}" placeholder="Search for products..." />
+            <input class="au-input au-input--xl" type="text" name="q" aria-label="Rechercher" value="{{ request.GET.q }}" placeholder="Recherchez des produits..." />
             <button class="au-btn--submit" type="submit">
                 <i class="fas fa-search"></i>
             </button>
@@ -29,16 +29,16 @@
             <div class="card" style="width: 20rem; background: #f3f3f3;">
             
                 <a href="{{ obj.get_absolute_url }}">
-                    <img class="card-img-top" src="{{ obj.image.url }}" alt="{{ obj.title}} logo">
+                    <img class="card-img-top" src="{{ obj.image.url }}" alt="Image de {{ obj.title }}">
                 </a>
             
                 <div class="card-body">
                     <h4 class="card-title"><a href="{{ obj.get_absolute_url }}">{{ obj.title|title }}</a></h4>
-                    <p>{{ obj.timestamp|timesince }} ago</p>
+                    <p>Ajouté {{ obj.timestamp|timesince }}</p>
                     <p class="card-text">{{ obj.description|linebreaks|truncatewords:14 }}</p>
                     
                     <div class='text-center'>
-                        <a href="{{ obj.get_absolute_url }}" class="btn btn-primary my-2">View</a>
+                        <a href="{{ obj.get_absolute_url }}" class="btn btn-primary my-2">Voir</a>
                     </div>
                 </div>
             </div>

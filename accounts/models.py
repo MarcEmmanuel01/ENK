@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import AbstractUser
 from .validators import ASCIIUsernameValidator
-
+from django.contrib.auth import get_user_model
+from django.conf import settings
 
 class User(AbstractUser):
     is_customer = models.BooleanField(default=False)
@@ -26,3 +27,23 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('profile_single', kwargs={'id': self.id})
+
+
+
+
+
+
+class ContactMessage(models.Model):
+    fullname = models.CharField(max_length=255)
+    email = models.EmailField(max_length=254)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        null=True, 
+        blank=True, 
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return f"{self.fullname} ({self.email})"

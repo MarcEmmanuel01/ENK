@@ -1,41 +1,44 @@
-from django.conf.urls import url
 from django.urls import path
 from django.contrib.auth.views import (
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, 
-    PasswordResetCompleteView, LoginView, LogoutView
-    )
-from .views import *
+    PasswordResetCompleteView, LoginView
+)
+from django.shortcuts import redirect
+from .views import (
+    profile,
+    profile_update,
+    change_password,
+    registration_page,
+    logout_view,
+)
 from .forms import EmailValidationOnForgotPassword
 
-
 urlpatterns = [
-    # Profile urls
-    url(r'^profile/$', profile, name='profile'),
-    url(r'^profile/edit/$', profile_update, name='edit_profile'),
-    url(r'^profile/change-password/$', change_password, name='change_password'),
-    # End Profile urls
+    # Profile URLs
+    path('profile/', profile, name='profile'),
+    path('profile/edit/', profile_update, name='edit_profile'),
+    path('profile/change-password/', change_password, name='change_password'),
 
-    # Registration url
-    url(r'^registration/$', registration_page, name='register'),
-    url(r'^login/$', LoginView.as_view(template_name='accounts/login.html'), name='login'),
-    url(r'^logout/$', LogoutView.as_view(), name='logout', kwargs={'next_page': '/'}),
+    # Registration & Authentication URLs
+    path('registration/', registration_page, name='register'),
+    path('login/', LoginView.as_view(template_name='accounts/login.html'), name='login'),
+    path('logout/', logout_view, name='logout'),  # Utilise la vue personnalisée logout_view
 
-    url(r'^password-reset/$', PasswordResetView.as_view(
+    # Redirect /accounts/ to /accounts/profile/
+    path('', lambda request: redirect('profile'), name='accounts_home'),
+
+    # Password reset URLs
+    path('password-reset/', PasswordResetView.as_view(
         form_class=EmailValidationOnForgotPassword,
         template_name='accounts/password_reset.html'
-    ),
-         name='password_reset'),
-    url(r'^password-reset/done/$', PasswordResetDoneView.as_view(
+    ), name='password_reset'),
+    path('password-reset/done/', PasswordResetDoneView.as_view(
         template_name='accounts/password_reset_done.html'
-    ),
-         name='password_reset_done'),
-    url(r'^password-reset-confirm/<uidb64>/<token>/$', PasswordResetConfirmView.as_view(
+    ), name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(
         template_name='accounts/password_reset_confirm.html'
-    ),
-         name='password_reset_confirm'),
-    url(r'^password-reset-complete/$', PasswordResetCompleteView.as_view(
+    ), name='password_reset_confirm'),
+    path('password-reset-complete/', PasswordResetCompleteView.as_view(
         template_name='accounts/password_reset_complete.html'
-    ),
-         name='password_reset_complete')
-    # End Registration url
+    ), name='password_reset_complete'),
 ]

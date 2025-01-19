@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Gestion des produits{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Gestion des produits</h2>
+    <hr>
+
+    {% if request.user.is_authenticated and request.user.is_superuser %}
+        <div class="mb-4">
+            <a href="{% url 'add_product' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Ajouter un produit
+            </a>
+            <a href="{% url 'products' %}" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Retirer un produit
+            </a>
+        </div>
+    {% else %}
+        <p class="text-danger">Vous n'avez pas l'autorisation pour gérer les produits.</p>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary mt-3">Soumettre</button>
+    </form>
+</div>
+{% endblock content %}
