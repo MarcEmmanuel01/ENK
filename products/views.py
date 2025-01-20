@@ -6,6 +6,7 @@ from django.contrib import messages
 from .models import Product
 from carts.models import Cart  # Import direct du modèle Cart
 from .forms import ProductForm
+from django.shortcuts import redirect
 
 
 class ProduitListView(ListView):
@@ -65,3 +66,12 @@ def manage_products(request):
 def product_list(request):
     products = Product.objects.all()
     return render(request, "products/produit.html", {"object_list": products})
+
+
+
+
+def add_to_cart(request):
+    """
+    Redirige vers l'ajout au panier centralisé dans `cart`.
+    """
+    return redirect("add_to_cart")
