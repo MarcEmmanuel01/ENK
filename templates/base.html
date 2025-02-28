@@ -11,7 +11,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/green.css' %}">
+    <!-- Ajout d'une police élégante pour le logo -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Style pour le logo, bannière défilante et panier -->
     <style>
         .brand-logo {
             font-family: 'Playfair Display', serif;
@@ -20,6 +22,8 @@
             letter-spacing: 1px;
             color: #ffffff;
         }
+        
+        /* Style pour la bannière défilante */
         .marquee-container {
             background-color: #2c3e50;
             color: #ffffff;
@@ -28,6 +32,7 @@
             width: 100%;
             position: relative;
         }
+        
         .marquee-text {
             display: inline-block;
             white-space: nowrap;
@@ -35,23 +40,30 @@
             font-weight: bold;
             letter-spacing: 1px;
         }
+        
         @keyframes marquee {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
+        
+        /* Icône pour le texte défilant */
         .marquee-text i {
             color: #e74c3c;
             margin-right: 10px;
         }
+        
+        /* Style pour le panier */
         .cart-icon-container {
             position: relative;
             display: inline-block;
             margin-left: 15px;
         }
+        
         .cart-icon {
             font-size: 24px;
             color: white;
         }
+        
         .cart-count {
             position: absolute;
             top: -10px;
@@ -127,7 +139,7 @@
     </nav>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-       <div class="container-fluid">
+       <div class='container-fluid'>
       <a class="navbar-brand" href="{% url 'home' %}">
         <span class="brand-logo">MANUSTYLE</span>
       </a>
@@ -140,6 +152,7 @@
           <li class="nav-item {% if request.path == home_url %}active{% endif %}">
             <a class="nav-link" href="{% url 'home' %}">Accueil</a>
           </li>
+          <!-- Lien vers la page des produits -->
           <li class="nav-item {% if request.path == '/products/' %}active{% endif %}">
             <a class="nav-link" href="{% url 'products' %}">Produits</a>
           </li>
@@ -161,7 +174,7 @@
         <!-- Panier d'achat avec icône et compteur -->
         <a href="{{ cart_url }}" class="cart-icon-container ml-3">
           <i class="fas fa-shopping-cart cart-icon"></i>
-          <span class="cart-count" id="cart-count">{% if request.session.cart_items %}{{ request.session.cart_items }}{% else %}0{% endif %}</span>
+          <span class="cart-count">{% if cart_count %}{{ cart_count }}{% else %}0{% endif %}</span>
         </a>
       </div>
     </div>
@@ -178,77 +191,52 @@
               Créez un compte et profitez de nos offres exclusives, réductions et nouveautés !
           </p>
   
+          <!-- Bouton d'inscription stylé avec moins d'espace autour -->
           <a href="{% url 'register' %}" class="btn btn-lg btn-primary shadow-lg px-4 py-2 mt-2"
              style="font-size: 1.3rem; border-radius: 40px; font-weight: bold;">
               🚀 S'inscrire maintenant !
           </a>
       </div>
-    </section>  
+  </section>  
+  
 
-    <footer>
-      <section id="top-footer">
-        <div class="container">
-          <div class="row py-5 px-4">
-            <div class="col-md-4">
-              <ul>
-                <h5>À PROPOS DE NOUS</h5>
-                <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>              
-                <li><i class="fas fa-map-marker"></i>Abidjan , Cocody ABATTA</li>
-                <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
-                <li><i class="fas fa-envelope"></i>Manu@style.co</li>
-              </ul>
-            </div>
-            <div class="col-md-2 mr-3">
-              <ul>
-                <h5>CATEGORIES</h5>
-                <li><a href="{% url 'home' %}">Accueil</a></li>
-                <li><a href="{% url 'about' %}">À propos</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
-                <li><a href="{% url 'products' %}">Produits</a></li>
-                <li><a href="{% url 'cart' %}">Panier</a></li>
-              </ul>
-            </div>
+  <footer>
+    <section id="top-footer">
+      <div class="container">
+        <div class="row py-5 px-4">
+          <div class="col-md-4">
+            <ul>
+              <h5>À PROPOS DE NOUS</h5>
+              <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>              
+              <li><i class="fas fa-map-marker"></i>Abidjan , Cocody ABATTA</li>
+              <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
+              <li><i class="fas fa-envelope"></i>Manu@style.co</li>
+            </ul>
+          </div>
+          <div class="col-md-2 mr-3">
+            <ul>
+              <h5>CATEGORIES</h5>
+              <li><a href="{% url 'home' %}">Accueil</a></li>
+              <li><a href="{% url 'about' %}">À propos</a></li>
+              <li><a href="{% url 'contact' %}">Contact</a></li>
+              <li><a href="{% url 'products' %}">Produits</a></li>
+              <li><a href="{% url 'cart' %}">Panier</a></li>
+          </ul>
           </div>
         </div>
-      </section>
-      <section class="py-5" id="bottom-footer">
-        <div class="container text-center">
-          <span class="copyright">
-            Copyright © <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a target="_blank">Kassi Marc Emmanuel</a>
-          </span>
-        </div>
-      </section>
-    </footer>
+      </div>
+    </section>
+    <section class="py-5" id="bottom-footer">
+      <div class="container text-center">
+        <span class="copyright">
+          Copyright &copy; <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a target="_blank">Kassi Marc Emmanuel</a>
+        </span>
+      </div>
+    </section>
+  </footer>
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    <script>
-        $(document).ready(function() {
-            // Gestion de l'ajout au panier via AJAX
-            $('form[action="{% url 'add_to_cart' %}"]').on('submit', function(e) {
-                e.preventDefault(); // Empêche le rechargement de la page
-                var form = $(this);
-                
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: form.serialize(),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest' // Indique une requête AJAX
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Met à jour le compteur du panier
-                            $('#cart-count').text(response.cart_items_count);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("Erreur AJAX:", error);
-                    }
-                });
-            });
-        });
-    </script>
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
