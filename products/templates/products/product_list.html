@@ -4,332 +4,331 @@
 {% block content %}
 
 <style>
-    /* Style global des cartes produits */
-    .card {
+    /* Variables pour cohérence et facilité de maintenance */
+    :root {
+        --primary: #4361ee;
+        --accent: #f72585;
+        --success: #2ecc71;
+        --danger: #e63946;
+        --text: #2b2d42;
+        --text-light: #64748b;
+        --bg: #f8f9fa;
+        --radius: 12px;
+        --shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        --trans: all 0.3s ease;
+    }
+
+    /* Carte produit */
+    .product-card {
         position: relative;
-        border-radius: 12px;
+        border-radius: var(--radius);
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
         height: 100%;
-        background: #fff;
-        border: none;
+        transition: var(--trans);
+        background: white;
     }
-    .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Badge Nouveau */
-    .pro-new {
+
+    /* Badge */
+    .badge-new {
         position: absolute;
-        top: 15px;
-        left: 15px;
-        background: #ff4757;
+        top: 10px;
+        left: 10px;
+        background: var(--accent);
         color: white;
-        padding: 5px 12px;
-        border-radius: 25px;
-        font-size: 12px;
+        padding: 4px 10px;
+        font-size: 0.7rem;
         font-weight: 600;
-        z-index: 2;
-        box-shadow: 0 3px 8px rgba(255, 71, 87, 0.3);
+        border-radius: 30px;
+        z-index: 5;
+        box-shadow: 0 2px 5px rgba(247, 37, 133, 0.3);
     }
-    
-    /* Image et effet de hover */
-    .img-wrapper {
+
+    /* Image avec ratio conservé */
+    .img-container {
         position: relative;
+        padding-top: 100%; /* Ratio 1:1 */
         overflow: hidden;
-        padding-top: 100%; /* Format carré pour les images */
     }
-    .img-wrapper img {
+    .img-container img {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: var(--trans);
     }
-    .card:hover .img-wrapper img {
+    .product-card:hover .img-container img {
         transform: scale(1.08);
     }
-    
-    /* Overlay d'action sur l'image */
-    .img-text-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
+
+    /* Info produit */
+    .product-info {
+        padding: 15px;
+    }
+    .product-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text);
+        margin-bottom: 8px;
+        text-decoration: none;
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .product-title:hover {
+        color: var(--primary);
+    }
+    .product-price {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .current-price {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--success);
+    }
+    .discount-price {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        text-decoration: line-through;
+        margin-left: 8px;
+    }
+    .product-desc {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-bottom: 15px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        height: 38px;
+    }
+
+    /* Date info */
+    .date-added {
+        font-size: 0.7rem;
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .date-added i {
+        margin-right: 4px;
+    }
+
+    /* Actions */
+    .action-btn {
+        border: none;
         width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.2);
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.85rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        cursor: pointer;
+        transition: var(--trans);
     }
-    .card:hover .img-text-wrapper {
-        opacity: 1;
-    }
-    .img-text-wrapper a {
-        background: white;
-        color: #333;
-        padding: 12px 20px;
-        border-radius: 30px;
-        font-weight: 600;
-        text-decoration: none;
-        transform: translateY(20px);
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    .card:hover .img-text-wrapper a {
-        transform: translateY(0);
-    }
-    .img-text-wrapper a:hover {
-        background: #ff4757;
+    .add-btn {
+        background: var(--success);
         color: white;
     }
-    
-    /* Style du corps de la carte */
-    .card-body {
-        padding: 20px;
+    .add-btn:hover {
+        background: #27ae60;
+        transform: translateY(-2px);
     }
-    .product-btn {
-        font-size: 18px;
-        font-weight: 600;
-        color: #333;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-    .product-btn:hover {
-        color: #ff4757;
-        text-decoration: none;
-    }
-    
-    /* Prix */
-    .price {
-        font-size: 22px;
-        font-weight: 700;
-        color: #2ecc71;
-        display: block;
-        margin-bottom: 10px;
-    }
-    .dismiss-text {
-        font-size: 16px;
-        font-weight: 400;
-        color: #95a5a6;
-        text-decoration: line-through;
-        margin-left: 10px;
-    }
-    
-    /* Description */
-    .card-subtitle {
-        font-size: 14px;
-        color: #7f8c8d;
-        margin-bottom: 15px;
-        line-height: 1.5;
-    }
-    
-    /* Boutons panier */
-    .btn-outline-success {
-        color: #2ecc71;
-        border-color: #2ecc71;
-        padding: 10px 16px;
-        border-radius: 8px;
-        transition: all 0.3s;
-        font-weight: 600;
-    }
-    .btn-outline-success:hover {
-        background-color: #2ecc71;
+    .remove-btn {
+        background: var(--danger);
         color: white;
     }
-    .btn-outline-danger {
-        color: #e74c3c;
-        border-color: #e74c3c;
-        padding: 10px 16px;
-        border-radius: 8px;
-        transition: all 0.3s;
-        font-weight: 600;
+    .remove-btn:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
     }
-    .btn-outline-danger:hover {
-        background-color: #e74c3c;
-        color: white;
-    }
-    
-    /* Date d'ajout */
-    .date-wrapper {
-        font-size: 12px;
-        color: #95a5a6;
-        padding: 8px 15px;
-        display: flex;
-        align-items: center;
-    }
-    .date-wrapper i {
+    .action-btn i {
         margin-right: 5px;
     }
-    
+
     /* Titre de section */
-    .title-1 {
-        font-size: 28px;
-        font-weight: 700;
-        color: #333;
-        letter-spacing: 1px;
-    }
-    .title-line {
-        width: 80px;
-        height: 4px;
-        background: linear-gradient(to right, #3498db, #8e44ad);
-        margin-top: 10px;
-    }
-    
-    /* Section offre spéciale */
-    .hot-deal {
-        background: linear-gradient(45deg, #3498db, #8e44ad);
-        color: white;
-        border-radius: 12px;
-        padding: 40px;
-        margin-top: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-    .hot-deal h2 {
-        font-size: 32px;
+    .section-title {
+        position: relative;
+        font-size: 1.4rem;
         font-weight: 800;
-        margin-bottom: 15px;
+        color: var(--text);
+        margin-bottom: 25px;
+        display: inline-block;
     }
-    .hot-deal .lead {
-        font-size: 18px;
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 50%;
+        height: 3px;
+        background: var(--primary);
+    }
+
+    /* Promo banner */
+    .promo-banner {
+        background: linear-gradient(135deg, var(--primary), #7209b7);
+        border-radius: var(--radius);
+        padding: 25px 20px;
+        color: white;
+        text-align: center;
+        margin-top: 40px;
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.2);
+    }
+    .promo-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+    .promo-text {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
         opacity: 0.9;
     }
-    .hot-deal .countdown {
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    .promo-tag {
         background: rgba(255, 255, 255, 0.2);
-        padding: 8px 15px;
+        padding: 4px 12px;
         border-radius: 20px;
-        margin-right: 10px;
-        font-weight: 600;
+        font-size: 0.75rem;
+        font-weight: 500;
     }
-    .hot-deal .btn-danger {
-        background: #e74c3c;
+    .promo-btn {
+        background: white;
+        color: var(--primary);
+        padding: 8px 20px;
         border: none;
-        padding: 12px 25px;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--trans);
     }
-    .hot-deal .btn-danger:hover {
-        background: #c0392b;
+    .promo-btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     }
-    .hot-deal img {
-        transition: transform 0.5s;
+
+    /* Admin actions */
+    .admin-controls {
+        margin-bottom: 20px;
     }
-    .hot-deal img:hover {
-        transform: scale(1.05);
+    .admin-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        margin-right: 5px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .section-title {
+            font-size: 1.2rem;
+        }
+        .promo-title {
+            font-size: 1.1rem;
+        }
+        .product-title {
+            font-size: 0.85rem;
+        }
+        .current-price {
+            font-size: 0.9rem;
+        }
     }
 </style>
 
-<div class="section">
-    <div class="container">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <div class="title-1">NOUVEAUX PRODUITS</div>
-                <div class="title-line"></div>
-            </div>
+<div class="container py-4">
+    <!-- Header section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title">NOUVEAUX PRODUITS</h2>
         
-            {% if request.user.is_authenticated and request.user.is_superuser %}
-                <div>
-                    <a href="{% url 'add_product' %}" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Ajouter un produit
-                    </a>
-                    <a href="{% url 'manage_products' %}" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Gérer les produits
-                    </a>
-                </div>
-            {% endif %}
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+        <div class="admin-controls">
+            <a href="{% url 'add_product' %}" class="btn btn-sm btn-success admin-btn">
+                <i class="fas fa-plus"></i> Ajouter
+            </a>
+            <a href="{% url 'manage_products' %}" class="btn btn-sm btn-danger admin-btn">
+                <i class="fas fa-trash"></i> Gérer
+            </a>
         </div>
-        
-        <div class="row mt-5">
-            {% for obj in object_list %}
-                <div class="col-md-3 mb-5">
-                    <div class="card">
-                        <div class="cart"><small class="pro-new">Nouveau</small></div>
-                        <div class="img-wrapper">
-                            <img class="card-img-top" src="{{ obj.image.url }}" alt="{{ obj.title }}">
-                            <div class="img-text-wrapper">
-                                <a href="{{ obj.get_absolute_url }}">Voir les détails</a>
-                            </div>
-                        </div>
-                        <div class="cart">
-                            <div class="date-wrapper"><i class="fas fa-calendar-alt"></i>
-                                Ajouté {{ obj.timestamp|timesince }}
-                            </div>
-                        </div>
-                    
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <a href="{{ obj.get_absolute_url }}" class="product-btn">
-                                    {{ obj.title|title }}
-                                </a>
-                                <a href="{{ obj.get_absolute_url }}" class="product-btn">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <span class="price">{{ obj.price }} FCFA</span>
-                                {% if obj.discount_price %}<span class="dismiss-text">{{ obj.discount_price }} FCFA</span>{% endif %}
-                            </div>
-                            
-                            <div class="card-subtitle mb-3">{{ obj.description|linebreaks|truncatewords:10 }}</div>
-                            
-                            <div class="text-center">
-                                <form class="form-product-ajax" method="POST" action="{% url 'update' %}" data-endpoint="{% url 'update' %}" {% if request.user.is_authenticated %}data-user="abc"{% endif %}> 
-                                    {% csrf_token %}
-                                    <input type="hidden" name="product_id" value="{{ obj.id }}" {% if product.is_digital %}data-is-digital="true"{% endif%}/>
-                                    {% if obj in cart.products.all %}
-                                        <button type="submit" class="btn btn-outline-danger btn-block">
-                                            <i class="fa fa-shopping-cart"></i> Retirer du panier
-                                        </button>
-                                    {% else %}
-                                        <button type="submit" class="btn btn-outline-success btn-block">
-                                            <i class="fa fa-shopping-cart"></i> Ajouter au panier
-                                        </button>
-                                    {% endif %}
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+        {% endif %}
+    </div>
+    
+    <!-- Product grid -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+        {% for obj in object_list %}
+        <div class="col">
+            <div class="product-card">
+                <span class="badge-new">Nouveau</span>
+                
+                <div class="img-container">
+                    <img src="{{ obj.image.url }}" alt="{{ obj.title }}">
                 </div>
                 
-                {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                    </div><div class="row">
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<div class="section">
-    <div class="container">
-        <div class="hot-deal">
-            <img src="{% static 'img/product-1.png' %}" alt="" width="280px">
-            <div class="text-center">
-                <div class="mb-4">
-                    <span class="countdown">Vêtements</span>
-                    <span class="countdown">Chaussures</span>
-                    <span class="countdown">Montres</span>
-                    <span class="countdown">Accessoires</span>
+                <div class="date-added">
+                    <i class="fas fa-calendar-alt"></i> Ajouté {{ obj.timestamp|timesince }}
                 </div>
-                <h2>OFFRE SPÉCIALE DE LA SEMAINE</h2>
-                <p class="lead">Nouvelle collection jusqu'à -50%</p>
-                <button class="btn btn-danger mt-4"><a style="color: white; text-decoration: none;">Achetez maintenant</a></button>
+                
+                <div class="product-info">
+                    <a href="{{ obj.get_absolute_url }}" class="product-title">{{ obj.title|title }}</a>
+                    
+                    <div class="product-price">
+                        <span class="current-price">{{ obj.price }} FCFA</span>
+                        {% if obj.discount_price %}
+                        <span class="discount-price">{{ obj.discount_price }} FCFA</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-desc">{{ obj.description|linebreaks|truncatewords:10 }}</div>
+                    
+                    <form class="form-product-ajax" method="POST" action="{% url 'update' %}" data-endpoint="{% url 'update' %}" {% if request.user.is_authenticated %}data-user="abc"{% endif %}> 
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ obj.id }}" {% if product.is_digital %}data-is-digital="true"{% endif%}/>
+                        {% if obj in cart.products.all %}
+                        <button type="submit" class="action-btn remove-btn">
+                            <i class="fa fa-shopping-cart"></i> Retirer du panier
+                        </button>
+                        {% else %}
+                        <button type="submit" class="action-btn add-btn">
+                            <i class="fa fa-shopping-cart"></i> Ajouter au panier
+                        </button>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
-            <img src="{% static 'img/product-2.png' %}" alt="" width="280px">
         </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Promo banner -->
+    <div class="promo-banner">
+        <h3 class="promo-title">OFFRE SPÉCIALE DE LA SEMAINE</h3>
+        <p class="promo-text">Nouvelle collection jusqu'à -50%</p>
+        <div class="tag-container">
+            <span class="promo-tag">Vêtements</span>
+            <span class="promo-tag">Chaussures</span>
+            <span class="promo-tag">Montres</span>
+            <span class="promo-tag">Accessoires</span>
+        </div>
+        <button class="promo-btn">Achetez maintenant</button>
     </div>
 </div>
 
@@ -337,17 +336,17 @@
 
 {% block js %}
 <script>
-    // Surbrillance des images au survol
     document.addEventListener("DOMContentLoaded", function() {
-        const productItems = document.querySelectorAll('.img-wrapper');
-        
-        productItems.forEach(product => {
-            product.addEventListener('mouseover', () => {
-                product.childNodes[1].classList.add('img-darken');
-            });
-            product.addEventListener('mouseout', () => {
-                product.childNodes[1].classList.remove('img-darken');
-            });
+        // Animation d'entrée des produits
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
         });
     });
 </script>

@@ -1,289 +1,445 @@
 {% extends 'base.html' %}
 {% block title %}Liste des Produits | eCommerce{% endblock title %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <style>
-    /* Styling général des cartes */
-    .card {
-        position: relative;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        transition: 0.3s;
-        border-radius: 15px;
-        overflow: hidden;
-        border: none;
-        height: 100%;
-        background: #fff;
-    }
-    .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
+    /* Variables de design */
+    :root {
+        --primary: #4361ee;
+        --accent: #f72585;
+        --success: #2ecc71;
+        --danger: #e63946;
+        --dark: #2d3748;
+        --gray: #a0aec0;
+        --light: #f7fafc;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --radius: 10px;
+        --trans: all 0.3s ease;
     }
     
-    /* Image du produit */
+    /* Card produit */
+    .product-card {
+        position: relative;
+        border-radius: var(--radius);
+        background: white;
+        box-shadow: var(--shadow);
+        transition: var(--trans);
+        height: 100%;
+        border: none;
+        overflow: hidden;
+    }
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* Image produit */
     .product-img {
         position: relative;
         overflow: hidden;
-        height: 240px;
+        height: 0;
+        padding-bottom: 100%; /* Ratio 1:1 */
     }
     .product-img img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s;
+        transition: var(--trans);
     }
-    .card:hover .product-img img {
+    .product-card:hover .product-img img {
         transform: scale(1.1);
     }
     
-    /* Badge Nouveau */
-    .product-badge {
+    /* Badge */
+    .badge-new {
         position: absolute;
-        top: 15px;
-        left: 15px;
-        background: #ff6b6b;
+        top: 10px;
+        left: 10px;
+        background: var(--accent);
         color: white;
-        padding: 5px 12px;
-        border-radius: 25px;
-        font-size: 12px;
+        padding: 4px 12px;
+        font-size: 0.7rem;
         font-weight: 600;
+        border-radius: 20px;
         z-index: 2;
-        box-shadow: 0 3px 8px rgba(255, 107, 107, 0.3);
+        box-shadow: 0 3px 8px rgba(247, 37, 133, 0.3);
     }
     
-    /* Informations produit */
-    .card-body {
-        padding: 20px;
+    /* Contenu produit */
+    .product-content {
+        padding: 16px;
         text-align: center;
     }
+    
+    /* Titre */
     .product-title {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     .product-title a {
-        font-size: 18px;
+        color: var(--dark);
         font-weight: 700;
-        color: #333;
+        font-size: 0.95rem;
         text-decoration: none;
-        transition: all 0.3s;
+        transition: var(--trans);
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
     .product-title a:hover {
-        color: #4a89dc;
+        color: var(--primary);
     }
     
     /* Prix */
-    .price-wrapper {
-        margin-bottom: 15px;
+    .price-area {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .price {
-        font-size: 20px;
-        color: #4cd137;
+    .current-price {
+        font-size: 1.1rem;
         font-weight: 700;
-        display: inline-block;
+        color: var(--success);
     }
-    .price-discount {
-        font-size: 16px;
-        color: #ff6b6b;
+    .old-price {
+        font-size: 0.85rem;
+        color: var(--gray);
         text-decoration: line-through;
-        margin-right: 10px;
-        display: inline-block;
+        margin-right: 8px;
     }
     
     /* Description */
-    .product-description {
-        color: #777;
-        font-size: 14px;
-        line-height: 1.6;
-        margin-bottom: 20px;
+    .prod-description {
+        font-size: 0.8rem;
+        color: var(--gray);
+        line-height: 1.5;
+        margin-bottom: 15px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        height: 40px;
     }
     
     /* Sélecteur de quantité */
-    .quantity-selector {
+    .qty-selector {
         display: flex;
-        justify-content: center;
         align-items: center;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
+        justify-content: center;
+        margin-bottom: 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
         overflow: hidden;
+        width: 120px;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .quantity-btn {
-        width: 40px;
-        height: 40px;
+    .qty-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background: #f8f9fa;
         border: none;
-        font-size: 18px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--trans);
+    }
+    .qty-btn:hover {
+        background: #e2e8f0;
+    }
+    .qty-input {
+        width: 40px;
+        height: 32px;
+        border: none;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    /* Sélecteur de taille */
+    .size-selector {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    .size-select {
+        width: 120px;
+        padding: 6px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        background: #f8f9fa;
+        transition: var(--trans);
+    }
+    .size-select:hover {
+        border-color: var(--primary);
+    }
+    
+    /* Bouton d'ajout */
+    .cart-btn {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: var(--trans);
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
+        margin-bottom: 12px;
     }
-    .quantity-btn:hover {
-        background: #e9ecef;
-    }
-    .quantity-input {
-        width: 60px;
-        height: 40px;
-        border: none;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 600;
-    }
-    
-    /* Bouton d'ajout au panier */
-    .btn-add-to-cart {
-        width: 100%;
-        background: #4a89dc;
-        color: white;
-        padding: 12px;
-        border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s;
-        cursor: pointer;
-        margin-bottom: 15px;
-    }
-    .btn-add-to-cart:hover {
-        background: #3a70b6;
+    .cart-btn:hover {
+        background: #3049c7;
         transform: translateY(-2px);
     }
+    .cart-btn i {
+        margin-right: 6px;
+    }
     
-    /* Lien vers le panier */
-    .cart-link {
+    /* Lien panier */
+    .view-cart {
+        color: var(--primary);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
-        color: #4a89dc;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s;
+        transition: var(--trans);
     }
-    .cart-link i {
-        margin-right: 8px;
-        font-size: 18px;
-    }
-    .cart-link:hover {
-        color: #3a70b6;
+    .view-cart:hover {
+        color: #3049c7;
+        transform: translateY(-1px);
         text-decoration: none;
+    }
+    .view-cart i {
+        margin-right: 5px;
     }
     
-    /* Header de section */
-    .title-1 {
-        font-size: 28px;
+    /* Titre de section */
+    .section-title {
+        font-size: 1.4rem;
         font-weight: 800;
-        color: #333;
-        margin-bottom: 10px;
-        letter-spacing: 1px;
+        color: var(--dark);
+        margin-bottom: 8px;
+        position: relative;
+        display: inline-block;
     }
-    .title-line {
-        width: 80px;
-        height: 4px;
-        background: linear-gradient(to right, #4a89dc, #8e44ad);
-        margin-bottom: 30px;
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60%;
+        height: 3px;
+        background: var(--primary);
     }
     
-    /* Actions admin */
-    .admin-actions {
+    /* Admin buttons */
+    .admin-bar {
         margin-bottom: 30px;
     }
-    .admin-actions .btn {
-        margin-right: 10px;
-        border-radius: 8px;
-        padding: 10px 20px;
+    .admin-btn {
+        border-radius: 6px;
+        padding: 8px 15px;
         font-weight: 600;
+        font-size: 0.85rem;
+        margin-right: 6px;
+    }
+    
+    /* Promo banner */
+    .promo-section {
+        background: linear-gradient(135deg, var(--primary), #7209b7);
+        border-radius: var(--radius);
+        padding: 30px 20px;
+        color: white;
+        text-align: center;
+        margin-top: 50px;
+        box-shadow: 0 10px 25px rgba(67, 97, 238, 0.15);
+    }
+    .promo-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+    .promo-desc {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        margin-bottom: 20px;
+    }
+    .tag-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    .cat-tag {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    .discover-btn {
+        background: white;
+        color: #7209b7;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--trans);
+    }
+    .discover-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+        .section-title {
+            font-size: 1.2rem;
+        }
+        .promo-title {
+            font-size: 1.1rem;
+        }
+        .admin-btn {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+        }
     }
 </style>
 
-<div class="section py-5">
-    <div class="container">
-        <!-- Boutons pour administrateurs -->
+<div class="container py-4">
+    <!-- Section header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="section-title">NOUVEAUX PRODUITS</h2>
+        </div>
+        
         {% if request.user.is_authenticated and request.user.is_superuser %}
-        <div class="admin-actions">
-            <a href="{% url 'add_product' %}" class="btn btn-success">
-                <i class="fas fa-plus"></i> Ajouter un produit
+        <div class="admin-bar">
+            <a href="{% url 'add_product' %}" class="btn btn-success admin-btn">
+                <i class="fas fa-plus"></i> Ajouter
             </a>
-            <a href="{% url 'manage_products' %}" class="btn btn-danger">
-                <i class="fas fa-trash"></i> Retirer un produit
+            <a href="{% url 'manage_products' %}" class="btn btn-danger admin-btn">
+                <i class="fas fa-trash"></i> Gérer
             </a>
         </div>
         {% endif %}
-
-        <div class="title-1">NOUVEAUX PRODUITS</div>
-        <div class="title-line"></div>
-        
-        <div class="row">
-            {% for obj in object_list %}
-            <div class="col-md-3 mb-5">
-                <div class="card">
-                    <div class="product-img">
-                        <div class="product-badge">Nouveau</div>
-                        <a href="{{ obj.get_absolute_url }}">
-                            <img src="{{ obj.image.url }}" alt="{{ obj.title }}">
-                        </a>
+    </div>
+    
+    <!-- Product grid -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+        {% for obj in object_list %}
+        <div class="col mb-4">
+            <div class="product-card">
+                <div class="product-img">
+                    <span class="badge-new">Nouveau</span>
+                    <a href="{{ obj.get_absolute_url }}">
+                        <img src="{{ obj.image.url }}" alt="{{ obj.title }}">
+                    </a>
+                </div>
+                
+                <div class="product-content">
+                    <h5 class="product-title">
+                        <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                    </h5>
+                    
+                    <div class="price-area">
+                        {% if obj.discount_price %}
+                        <span class="old-price">{{ obj.discount_price }} FCFA</span>
+                        {% endif %}
+                        <span class="current-price">{{ obj.price }} FCFA</span>
                     </div>
-                    <div class="card-body">
-                        <h5 class="product-title">
-                            <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
-                        </h5>
+                    
+                    <div class="prod-description">
+                        {{ obj.description|linebreaks|truncatewords:10 }}
+                    </div>
+                    
+                    <!-- Quantité et ajout au panier -->
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ obj.id }}">
                         
-                        <div class="price-wrapper">
-                            {% if obj.discount_price %}
-                                <span class="price-discount">{{ obj.discount_price }} FCFA</span>
-                            {% endif %}
-                            <span class="price">{{ obj.price }} FCFA</span>
+                        <!-- Sélecteur de taille -->
+                        <div class="size-selector">
+                            <select name="size" class="size-select">
+                                <option value="S">S</option>
+                                <option value="M" selected>M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
                         </div>
                         
-                        <div class="product-description">
-                            {{ obj.description|linebreaks|truncatewords:10 }}
+                        <div class="qty-selector">
+                            <button type="button" class="qty-btn decrease" data-id="{{ obj.id }}">-</button>
+                            <input type="text" id="quantity-{{ obj.id }}" name="quantity" value="1" class="qty-input">
+                            <button type="button" class="qty-btn increase" data-id="{{ obj.id }}">+</button>
                         </div>
-
-                        <!-- Gestion des quantités et formulaire -->
-                        <form method="POST" action="{% url 'add_to_cart' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ obj.id }}">
-                            <div class="quantity-selector">
-                                <button type="button" class="quantity-btn decrease" data-id="{{ obj.id }}">-</button>
-                                <input type="text" id="quantity-{{ obj.id }}" name="quantity" value="1" class="quantity-input">
-                                <button type="button" class="quantity-btn increase" data-id="{{ obj.id }}">+</button>
-                            </div>
-                            <button type="submit" class="btn-add-to-cart">
-                                <i class="fas fa-shopping-cart"></i> Ajouter au panier
-                            </button>
-                        </form>
-
-                        <!-- Lien Voir le panier -->
-                        <a href="{% url 'cart' %}" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i> Voir mon panier
-                        </a>
-                    </div>
+                        
+                        <button type="submit" class="cart-btn">
+                            <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                        </button>
+                    </form>
+                    
+                    <!-- Lien panier -->
+                    <a href="{% url 'cart' %}" class="view-cart">
+                        <i class="fas fa-shopping-cart"></i> Voir mon panier
+                    </a>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
-</div>
-
-<!-- Promotion spéciale -->
-<div class="section pb-5">
-    <div class="container">
-        <div style="background: linear-gradient(45deg, #4a89dc, #8e44ad); border-radius: 15px; padding: 40px; color: white; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
-            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 15px;">OFFRE SPÉCIALE DE LA SEMAINE</h2>
-            <p style="font-size: 18px; margin-bottom: 20px;">Profitez de notre nouvelle collection avec jusqu'à 50% de réduction</p>
-            <div style="margin: 30px 0;">
-                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Vêtements</span>
-                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Chaussures</span>
-                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Montres</span>
-                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Accessoires</span>
-            </div>
-            <button style="background: white; color: #8e44ad; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s;">Découvrir maintenant</button>
+    
+    <!-- Promo banner -->
+    <div class="promo-section">
+        <h2 class="promo-title">OFFRE SPÉCIALE DE LA SEMAINE</h2>
+        <p class="promo-desc">Profitez de notre nouvelle collection avec jusqu'à 50% de réduction</p>
+        
+        <div class="tag-wrap">
+            <span class="cat-tag">Vêtements</span>
+            <span class="cat-tag">Chaussures</span>
+            <span class="cat-tag">Montres</span>
+            <span class="cat-tag">Accessoires</span>
         </div>
+        
+        <button class="discover-btn">Découvrir maintenant</button>
     </div>
 </div>
 
 {% block js %}
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
+        // Animation d'entrée des produits
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            }, index * 100);
+        });
+        
         // Gestion des quantités
-        document.querySelectorAll(".quantity-selector").forEach(selector => {
+        document.querySelectorAll(".qty-selector").forEach(selector => {
             const decreaseBtn = selector.querySelector(".decrease");
             const increaseBtn = selector.querySelector(".increase");
             const input = selector.querySelector("input");
@@ -303,5 +459,4 @@
     });
 </script>
 {% endblock js %}
-
-{% endblock content %}
+{% endblock %}
