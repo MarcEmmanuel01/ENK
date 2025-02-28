@@ -11,6 +11,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/green.css' %}">
+    <!-- Ajout d'une police élégante pour le logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Style pour le logo -->
+    <style>
+        .brand-logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 300;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+    </style>
 </head>
 <body>
     {% url 'home' as home_url %}
@@ -26,7 +38,7 @@
         <div class="nav-wrapper">
         <ul class="navbar-nav">
           <li><a href="#0924419094"><i class="fas fa-phone"></i> +(225) 07 59 96 24 96</a></li>
-          <li><a href="mailto:support@ecommerce.fr"><i class="fas fa-envelope ml-3"></i>ENK@gmail.com</a></li>
+          <li><a href="mailto:support@ecommerce.fr"><i class="fas fa-envelope ml-3"></i>Manu@style.co</a></li>
           <li><a href="#"><i class="fas fa-map-marker ml-3"></i>Abidjan</a></li>
         </ul>
         <ul class="navbar-nav">
@@ -63,8 +75,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
        <div class='container-fluid'>
       <a class="navbar-brand" href="{% url 'home' %}">
-        <img src="{% static 'img/1.png' %}" width="50" height="40" class="d-inline-block align-top" alt="">
-        <strong></strong>
+        <span class="brand-logo">MANUSTYLE</span>
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Navigation">
         <span class="navbar-toggler-icon"></span>
@@ -106,29 +117,23 @@
     </nav>
 
     {% block content %}{% endblock content %}
-
-    <section class="bg-light py-5" style="border-top: 2px solid #ddd;">
-      <div class="container" style="display: flex; justify-content: center;">
-          <div class="row">
-              <div class="col-md-12 text-center">
-                  <p class="lead">Inscrivez-vous à notre <b>NEWSLETTER</b></p>
-                  <form class="form-header" action="{% url 'subscribe' %}" method="POST">
-                      {% csrf_token %}
-                      <input class="au-input au-input--xl" type="email" name="email" aria-label="email" value="" placeholder="E-mail" required />
-                      <button class="au-btn--submit" type="submit">S'abonner</button>
-                  </form>
-                  <p>Abonnez-vous à notre site pour recevoir nos nouveaux produits...</p>
+    <section class="bg-light py-4 text-center" style="border-top: 2px solid #ddd;">
+      <div class="container d-flex flex-column align-items-center">
+          <h2 class="mb-3 font-weight-bold text-uppercase" style="font-size: 2rem; color: #333;">
+              🎉 Rejoignez-nous dès maintenant ! 🎉
+          </h2>
+          
+          <p class="lead mb-2" style="font-size: 1.2rem; max-width: 550px; color: #555;">
+              Créez un compte et profitez de nos offres exclusives, réductions et nouveautés !
+          </p>
   
-                  <!-- Messages de feedback -->
-                  {% if messages %}
-                      {% for message in messages %}
-                          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                      {% endfor %}
-                  {% endif %}
-              </div>
-          </div>
+          <!-- Bouton d'inscription stylé avec moins d'espace autour -->
+          <a href="{% url 'register' %}" class="btn btn-lg btn-primary shadow-lg px-4 py-2 mt-2"
+             style="font-size: 1.3rem; border-radius: 40px; font-weight: bold;">
+              🚀 S'inscrire maintenant !
+          </a>
       </div>
-  </section>
+  </section>  
   
 
   <footer>
@@ -141,7 +146,7 @@
               <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>              
               <li><i class="fas fa-map-marker"></i>Abidjan , Cocody ABATTA</li>
               <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
-              <li><i class="fas fa-envelope"></i>ENK@gmail.com</li>
+              <li><i class="fas fa-envelope"></i>Manu@style.co</li>
             </ul>
           </div>
           <div class="col-md-2 mr-3">
@@ -160,7 +165,7 @@
     <section class="py-5" id="bottom-footer">
       <div class="container text-center">
         <span class="copyright">
-          Copyright &copy; <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a href="https://ezop.herokuapp.com" target="_blank">Kassi Marc</a>
+          Copyright &copy; <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a target="_blank">Kassi Marc Emmanuel</a>
         </span>
       </div>
     </section>

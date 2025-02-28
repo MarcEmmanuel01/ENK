@@ -4,6 +4,15 @@
 {% block content %}
 
 <style>
+        /* ✅ Suppression des marges en haut et en bas */
+    .section {
+        margin: 0;
+        padding: 0;
+    }
+    .hot-deal {
+        margin: 0 auto;
+        padding: 20px 0; 
+    }
     .card {
         position: relative;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -25,12 +34,14 @@
                 <span class="countdown mr-5">Montres</span><span class="countdown">Et autres</span>
             </div>
             <h2>OFFRE DE LA SEMAINE</h2><p class="lead">Nouvelle collection jusqu'à 50% de réduction</p><br>
-            <button class="btn btn-danger mt-4"><a class="">Achetez maintenant</a></button>
-        </div>a
+            <button class="btn btn-danger mt-4">
+                <a href="{% url 'products' %}" class="text-white text-decoration-none">Achetez maintenant</a>
+            </button>
+            
+        </div>
         <img src="{% static 'img/product-2.png' %}" alt="" width="350px">
     </div>
 </div>
-
 {% endblock content %}
 
 {% block js %}

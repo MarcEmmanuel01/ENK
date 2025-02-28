@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '2at5zucn00%$4%aj)d@tx!bd2c%b6-qzg1@em3zvfhheq=k3qy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['MarcEmmanuel01.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # change the default user models to our custom model
@@ -93,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mon_appli_ecommerce',  # Database name
         'USER': 'admin',               # Username
-        'PASSWORD': '123456789',   # Password
+        'PASSWORD': 'Admin123',   # Password
         'HOST': 'localhost',           # Database host
         'PORT': '5432',                # Port (default for PostgreSQL)
         'OPTIONS': {
@@ -141,17 +141,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ["staticfiles"]))
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+STATIC_URL = '/static/'
+
+# ✅ Indique le bon chemin vers `static/`
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),  # Django doit chercher ici
 ]
 
-# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "static_root")
+# ❌ Ne pas utiliser `STATIC_ROOT` en mode développement
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
