@@ -13,17 +13,31 @@ class CartManager(models.Manager):
         Obtenez un panier existant ou créez-en un nouveau pour l'utilisateur.
         """
         cart_id = request.session.get("cart_id", None)
-        qs = self.get_queryset().filter(id=cart_id)
-        if qs.exists():
-            cart_obj = qs.first()
-            new_obj = False
-            if request.user.is_authenticated and cart_obj.user is None:
-                cart_obj.user = request.user
-                cart_obj.save()
+        cart_obj = None
+        new_obj = False
+
+        # Si l'utilisateur est authentifié, vérifiez d'abord son panier existant
+        if request.user.is_authenticated:
+            try:
+                cart_obj = Cart.objects.get(user=request.user)
+                # Si un panier existe déjà, utilisez-le même si cart_id diffère
+                if cart_id != cart_obj.id:
+                    request.session['cart_id'] = cart_obj.id  # Mettez à jour la session
+            except Cart.DoesNotExist:
+                # Aucun panier pour cet utilisateur, créez-en un
+                cart_obj = self.new(user=request.user)
+                new_obj = True
+                request.session['cart_id'] = cart_obj.id
         else:
-            cart_obj = self.new(user=request.user if request.user.is_authenticated else None)
-            new_obj = True
-            request.session['cart_id'] = cart_obj.id
+            # Utilisateur non authentifié : récupérez ou créez un panier anonyme
+            qs = self.get_queryset().filter(id=cart_id)
+            if qs.exists():
+                cart_obj = qs.first()
+            else:
+                cart_obj = self.new(user=None)
+                new_obj = True
+                request.session['cart_id'] = cart_obj.id
+
         return cart_obj, new_obj
 
     def new(self, user=None):
@@ -97,5 +111,6 @@ def pre_save_cart_receiver(sender, instance, **kwargs):
     Calcule le total du panier avant de le sauvegarder, sans appliquer de taxe.
     """
     instance.total = instance.subtotal  # Total = Sous-total (pas de taxe)
+
 
 pre_save.connect(pre_save_cart_receiver, sender=Cart)

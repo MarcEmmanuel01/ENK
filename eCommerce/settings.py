@@ -26,8 +26,7 @@ SECRET_KEY = '2at5zucn00%$4%aj)d@tx!bd2c%b6-qzg1@em3zvfhheq=k3qy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # change the default user models to our custom model
 AUTH_USER_MODEL = 'accounts.User'
@@ -95,7 +94,7 @@ DATABASES = {
         'USER': 'admin',               # Username
         'PASSWORD': 'Admin123',   # Password
         'HOST': 'localhost',           # Database host
-        'PORT': '5432',                # Port (default for PostgreSQL)
+        'PORT': '5433',                # Port (default for PostgreSQL)
         'OPTIONS': {
             'client_encoding': 'UTF8',
         },
