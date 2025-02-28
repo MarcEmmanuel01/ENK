@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static cart_filters %}
+
+{% block title %}Validation de commande{% endblock title %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="title-1">
+            Finaliser votre commande
+        </div>
+        <div class="title-line mb-5"></div>
+
+        <div class="row">
+            <!-- Colonne de gauche: Formulaire de contact et livraison -->
+            <div class="col-lg-7 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-light">
+                        <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Vos informations</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'place_order' %}" id="checkout-form">
+                            {% csrf_token %}
+                            
+                            <!-- Informations personnelles -->
+                            <div class="mb-4">
+                                <h6 class="text-uppercase mb-3 border-bottom pb-2">Informations personnelles</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="fullname" class="form-label">Nom complet <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="fullname" name="fullname" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Numéro de téléphone <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Ex: 07 59 96 24 96" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Optionnel">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Adresse de livraison -->
+                            <div class="mb-4">
+                                <h6 class="text-uppercase mb-3 border-bottom pb-2">Adresse de livraison</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">Ville <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="city" name="city" required>
+                                        <option value="" selected disabled>Sélectionnez votre ville</option>
+                                        <option value="abidjan">Abidjan</option>
+                                        <option value="yamoussoukro">Yamoussoukro</option>
+                                        <option value="bouake">Bouaké</option>
+                                        <option value="korhogo">Korhogo</option>
+                                        <option value="autre">Autre</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="district" class="form-label">Quartier/Commune <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="district" name="district" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Adresse détaillée <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="address" name="address" rows="3" placeholder="Ex: Rue, immeuble, repères..." required></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Notes de commande -->
+                            <div class="mb-4">
+                                <h6 class="text-uppercase mb-3 border-bottom pb-2">Notes supplémentaires</h6>
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">Instructions spéciales</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Instructions pour la livraison ou autres demandes (optionnel)"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Colonne de droite: Récapitulatif et paiement -->
+            <div class="col-lg-5">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-dark text-light">
+                        <h5 class="mb-0"><i class="fas fa-shopping-basket me-2"></i>Récapitulatif de commande</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Produit</th>
+                                        <th class="text-end">Quantité</th>
+                                        <th class="text-end">Prix</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart_items %}
+                                    <tr>
+                                        <td>{{ item.product.title|truncatechars:25 }}</td>
+                                        <td class="text-end">{{ item.quantity }}</td>
+                                        <td class="text-end">{{ item.product.price|mul:item.quantity|floatformat:2 }} FCFA</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="border-top pt-4 mt-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Sous-total:</span>
+                                <span>{{ cart.total|floatformat:2 }} FCFA</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Frais de livraison:</span>
+                                <span>1000 FCFA</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 fw-bold">
+                                <span>Total:</span>
+                                <span class="fs-5 text-success">{{ cart.total|add:1000|floatformat:2 }} FCFA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Méthode de paiement -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-dark text-light">
+                        <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Mode de paiement</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3 border p-3 rounded bg-light">
+                            <input class="form-check-input" type="radio" name="payment_method" id="payment-cash" value="cash" checked>
+                            <label class="form-check-label fw-bold" for="payment-cash">
+                                Paiement à la livraison
+                            </label>
+                            <div class="text-muted small mt-1">
+                                Vous paierez en espèces à la réception de votre commande
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message de garantie et bouton de confirmation -->
+                <div class="alert alert-primary d-flex" role="alert">
+                    <i class="fas fa-shield-alt fs-5 me-3 align-self-center"></i>
+                    <div>
+                        <strong>Paiement sécurisé à la livraison uniquement!</strong>
+                        <p class="mb-0 small">Vous ne payez qu'à la réception de vos articles.</p>
+                    </div>
+                </div>
+                
+                <button type="submit" form="checkout-form" class="btn btn-success btn-lg w-100 mb-4">
+                    <i class="fas fa-check-circle me-2"></i>Valider ma commande
+                </button>
+                
+                <div class="text-center">
+                    <a href="{% url 'cart' %}" class="text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i>Retour au panier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

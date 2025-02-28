@@ -19,4 +19,9 @@ urlpatterns = [
 
     # Compteur d'articles pour mise à jour dynamique
     path('items-count/', views.items_count, name='items_count'),
+
+    # Validation de la commande
+    path('checkout/', views.place_order, name='place_order'),  # Utilisation de views.place_order
+
+    path('confirmation/', views.order_confirmation, name='order_confirmation'),
 ]

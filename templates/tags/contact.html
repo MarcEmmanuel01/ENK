@@ -13,14 +13,6 @@
             N'hésitez pas à nous écrire si vous avez des questions ou des préoccupations. Nous sommes là pour vous aider.
         </p>
 
-        <!-- Messages d'alerte en cas de succès ou d'erreurs -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
 
         <!-- Formulaire de contact -->
         <div class='row'>

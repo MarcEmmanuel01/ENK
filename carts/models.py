@@ -114,3 +114,46 @@ def pre_save_cart_receiver(sender, instance, **kwargs):
 
 
 pre_save.connect(pre_save_cart_receiver, sender=Cart)
+
+
+# Ajout des modèles Order et OrderItem
+class Order(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    order_identifier = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True,
+        unique=True
+    )
+    fullname = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField(blank=True, null=True)
+    city = models.CharField(max_length=100)
+    district = models.CharField(max_length=100)
+    address = models.TextField()
+    notes = models.TextField(blank=True, null=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        default="pending",
+        choices=[("pending", "En attente"), ("shipped", "Expédiée"), ("delivered", "Livrée")]
+    )
+
+    def __str__(self):
+        return f"Commande {self.id} - {self.fullname}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.title} (Commande {self.order.id})"

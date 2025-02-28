@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'products',
     'search',
     'tags',
-    'carts',
+    'carts.apps.CartsConfig',
     'crispy_forms',
     'crispy_bootstrap5',
     

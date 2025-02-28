@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmation de commande{% endblock title %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="title-1 text-center">
+            Commande confirmée !
+        </div>
+        <div class="title-line mb-5"></div>
+
+        <div class="alert alert-success text-center" role="alert">
+            <i class="fas fa-check-circle fa-2x mb-3"></i>
+            <h4>Votre commande a été passée avec succès !</h4>
+            <p>Merci de faire vos achats chez MANUSTYLE.</p>
+        </div>
+
+        {% if order %}
+        <div class="card shadow">
+            <div class="card-header bg-dark text-light">
+                <h5 class="mb-0">Détails de votre commande</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Numéro de commande :</strong> {% if order.order_identifier %}{{ order.order_identifier }}{% else %}{{ order.id }}{% endif %}</p>
+                <p><strong>Nom :</strong> {{ order.fullname }}</p>
+                <p><strong>Téléphone :</strong> {{ order.phone }}</p>
+                {% if order.email %}<p><strong>Email :</strong> {{ order.email }}</p>{% endif %}
+                <p><strong>Adresse :</strong> {{ order.address }}, {{ order.district }}, {{ order.city }}</p>
+                <p><strong>Total :</strong> {{ order.total_price|floatformat:2 }} FCFA (frais de livraison inclus)</p>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center">Les détails de votre commande ne sont pas disponibles pour les utilisateurs non connectés.</p>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-primary">Retour à l'accueil</a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'cart' %}" class="btn btn-secondary ml-2">Voir mon panier</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

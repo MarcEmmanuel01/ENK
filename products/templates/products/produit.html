@@ -7,114 +7,197 @@
     /* Styling général des cartes */
     .card {
         position: relative;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         transition: 0.3s;
-        border-radius: 10px;
+        border-radius: 15px;
         overflow: hidden;
+        border: none;
+        height: 100%;
+        background: #fff;
     }
     .card:hover {
         transform: translateY(-10px);
-        box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.4);
+        box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
     }
-    .card img {
+    
+    /* Image du produit */
+    .product-img {
+        position: relative;
+        overflow: hidden;
+        height: 240px;
+    }
+    .product-img img {
         width: 100%;
-        height: auto;
+        height: 100%;
         object-fit: cover;
+        transition: transform 0.5s;
     }
+    .card:hover .product-img img {
+        transform: scale(1.1);
+    }
+    
+    /* Badge Nouveau */
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: #ff6b6b;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 2;
+        box-shadow: 0 3px 8px rgba(255, 107, 107, 0.3);
+    }
+    
+    /* Informations produit */
     .card-body {
+        padding: 20px;
         text-align: center;
     }
-    .card h5 a {
-        font-size: 18px;
-        font-weight: bold;
-        color: #000; /* Nom des produits en noir */
-        text-decoration: none;
-        transition: 0.3s;
+    .product-title {
+        margin-bottom: 15px;
     }
-    .card h5 a:hover {
-        color: #007bff; /* Changement de couleur au survol */
+    .product-title a {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    .product-title a:hover {
+        color: #4a89dc;
+    }
+    
+    /* Prix */
+    .price-wrapper {
+        margin-bottom: 15px;
     }
     .price {
-        font-size: 18px;
-        color: #28a745;
-        font-weight: bold;
-        display: inline;
+        font-size: 20px;
+        color: #4cd137;
+        font-weight: 700;
+        display: inline-block;
     }
     .price-discount {
         font-size: 16px;
-        color: #dc3545;
+        color: #ff6b6b;
         text-decoration: line-through;
-        margin-right: 5px;
-        display: inline;
+        margin-right: 10px;
+        display: inline-block;
     }
+    
+    /* Description */
+    .product-description {
+        color: #777;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    /* Sélecteur de quantité */
     .quantity-selector {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 8px;
-        margin-top: 10px;
-    }
-    .quantity-input {
-        width: 50px;
-        height: 35px;
-        text-align: center;
+        margin-bottom: 20px;
         border: 1px solid #ddd;
-        border-radius: 5px;
-        background: #f8f9fa;
-        font-size: 16px;
-        font-weight: bold;
+        border-radius: 10px;
+        overflow: hidden;
     }
     .quantity-btn {
-        padding: 8px 12px;
-        font-size: 16px;
+        width: 40px;
+        height: 40px;
+        background: #f8f9fa;
         border: none;
-        background-color: #007bff;
-        color: white;
-        border-radius: 5px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.2s;
     }
     .quantity-btn:hover {
-        background-color: #0056b3;
+        background: #e9ecef;
     }
-    .btn-add-to-cart {
-        display: inline-block;
-        margin-top: 10px;
-        background-color: #28a745;
-        color: white;
-        padding: 8px 18px;
-        font-size: 16px;
+    .quantity-input {
+        width: 60px;
+        height: 40px;
         border: none;
-        border-radius: 5px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    /* Bouton d'ajout au panier */
+    .btn-add-to-cart {
+        width: 100%;
+        background: #4a89dc;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s;
         cursor: pointer;
-        transition: 0.3s;
+        margin-bottom: 15px;
     }
     .btn-add-to-cart:hover {
-        background-color: #218838;
+        background: #3a70b6;
+        transform: translateY(-2px);
     }
+    
+    /* Lien vers le panier */
     .cart-link {
         display: inline-flex;
         align-items: center;
-        margin-top: 10px;
-        font-size: 16px;
-        color: #007bff;
+        color: #4a89dc;
         text-decoration: none;
-        transition: 0.3s;
+        font-weight: 600;
+        transition: all 0.3s;
     }
     .cart-link i {
-        font-size: 24px;
-        margin-right: 5px;
+        margin-right: 8px;
+        font-size: 18px;
     }
     .cart-link:hover {
-        color: #0056b3;
+        color: #3a70b6;
+        text-decoration: none;
+    }
+    
+    /* Header de section */
+    .title-1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #333;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+    .title-line {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, #4a89dc, #8e44ad);
+        margin-bottom: 30px;
+    }
+    
+    /* Actions admin */
+    .admin-actions {
+        margin-bottom: 30px;
+    }
+    .admin-actions .btn {
+        margin-right: 10px;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
     }
 </style>
 
-<div class="section">
+<div class="section py-5">
     <div class="container">
         <!-- Boutons pour administrateurs -->
         {% if request.user.is_authenticated and request.user.is_superuser %}
-        <div class="admin-actions mb-4">
+        <div class="admin-actions">
             <a href="{% url 'add_product' %}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Ajouter un produit
             </a>
@@ -125,30 +208,33 @@
         {% endif %}
 
         <div class="title-1">NOUVEAUX PRODUITS</div>
-        <div class="title-line mb-5"></div>
+        <div class="title-line"></div>
         
         <div class="row">
             {% for obj in object_list %}
             <div class="col-md-3 mb-5">
                 <div class="card">
-                    <a href="{{ obj.get_absolute_url }}">
-                        <img src="{{ obj.image.url }}" alt="{{ obj.title }}">
-                    </a>
+                    <div class="product-img">
+                        <div class="product-badge">Nouveau</div>
+                        <a href="{{ obj.get_absolute_url }}">
+                            <img src="{{ obj.image.url }}" alt="{{ obj.title }}">
+                        </a>
+                    </div>
                     <div class="card-body">
-                        <h5>
+                        <h5 class="product-title">
                             <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
                         </h5>
                         
-                        {% if obj.discount_price %}
-                            <p>
+                        <div class="price-wrapper">
+                            {% if obj.discount_price %}
                                 <span class="price-discount">{{ obj.discount_price }} FCFA</span>
-                                <span class="price">{{ obj.price }} FCFA</span>
-                            </p>
-                        {% else %}
-                            <p class="price">{{ obj.price }} FCFA</p>
-                        {% endif %}
+                            {% endif %}
+                            <span class="price">{{ obj.price }} FCFA</span>
+                        </div>
                         
-                        <p>{{ obj.description|linebreaks|truncatewords:10 }}</p>
+                        <div class="product-description">
+                            {{ obj.description|linebreaks|truncatewords:10 }}
+                        </div>
 
                         <!-- Gestion des quantités et formulaire -->
                         <form method="POST" action="{% url 'add_to_cart' %}">
@@ -156,15 +242,17 @@
                             <input type="hidden" name="product_id" value="{{ obj.id }}">
                             <div class="quantity-selector">
                                 <button type="button" class="quantity-btn decrease" data-id="{{ obj.id }}">-</button>
-                                <input type="text" id="quantity-{{ obj.id }}" name="quantity" value="0" class="quantity-input">
+                                <input type="text" id="quantity-{{ obj.id }}" name="quantity" value="1" class="quantity-input">
                                 <button type="button" class="quantity-btn increase" data-id="{{ obj.id }}">+</button>
                             </div>
-                            <button type="submit" class="btn-add-to-cart">Ajouter</button>
+                            <button type="submit" class="btn-add-to-cart">
+                                <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                            </button>
                         </form>
 
                         <!-- Lien Voir le panier -->
                         <a href="{% url 'cart' %}" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i> Voir le panier
+                            <i class="fas fa-shopping-cart"></i> Voir mon panier
                         </a>
                     </div>
                 </div>
@@ -174,23 +262,41 @@
     </div>
 </div>
 
+<!-- Promotion spéciale -->
+<div class="section pb-5">
+    <div class="container">
+        <div style="background: linear-gradient(45deg, #4a89dc, #8e44ad); border-radius: 15px; padding: 40px; color: white; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 15px;">OFFRE SPÉCIALE DE LA SEMAINE</h2>
+            <p style="font-size: 18px; margin-bottom: 20px;">Profitez de notre nouvelle collection avec jusqu'à 50% de réduction</p>
+            <div style="margin: 30px 0;">
+                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Vêtements</span>
+                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Chaussures</span>
+                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Montres</span>
+                <span style="background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; margin: 0 10px; font-weight: 600;">Accessoires</span>
+            </div>
+            <button style="background: white; color: #8e44ad; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s;">Découvrir maintenant</button>
+        </div>
+    </div>
+</div>
+
 {% block js %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Gestion des quantités
         document.querySelectorAll(".quantity-selector").forEach(selector => {
             const decreaseBtn = selector.querySelector(".decrease");
             const increaseBtn = selector.querySelector(".increase");
             const input = selector.querySelector("input");
 
             decreaseBtn.addEventListener("click", () => {
-                let value = parseInt(input.value || 0); // Si vide, considérer comme 0
-                if (value > 0) { // Minimum 0
+                let value = parseInt(input.value || 1);
+                if (value > 1) {
                     input.value = value - 1;
                 }
             });
 
             increaseBtn.addEventListener("click", () => {
-                let value = parseInt(input.value || 0); // Si vide, considérer comme 0
+                let value = parseInt(input.value || 1);
                 input.value = value + 1;
             });
         });
