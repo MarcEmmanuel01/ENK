@@ -67,73 +67,6 @@
             font-size: 12px;
             font-weight: bold;
         }
-        
-        /* Responsive styles - Only apply on mobile */
-        @media (max-width: 768px) {
-            /* Top navigation bar */
-            .navbar-header .nav-wrapper {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .navbar-header .navbar-nav {
-                margin: 5px 0;
-                justify-content: center;
-                width: 100%;
-                padding: 0;
-            }
-            
-            .navbar-header .navbar-nav li {
-                margin: 0 5px;
-                font-size: 0.85rem;
-            }
-            
-            /* Search form */
-            #navbarSupportedContent {
-                text-align: center;
-            }
-            
-            .form-header {
-                width: 100%;
-                margin: 10px 0;
-            }
-            
-            /* Footer adjustments */
-            footer .row {
-                text-align: center;
-            }
-            
-            footer .col-md-2, footer .col-md-4 {
-                margin-bottom: 20px;
-            }
-            
-            /* Navigation items */
-            #navbarSupportedContent .navbar-nav {
-                margin: 10px auto;
-                text-align: center;
-            }
-            
-            /* General spacing */
-            .cart-icon-container {
-                margin: 10px auto;
-                display: block;
-                text-align: center;
-            }
-            
-            /* Join us section */
-            section.bg-light h2 {
-                font-size: 1.5rem !important;
-            }
-            
-            section.bg-light p {
-                font-size: 1rem !important;
-            }
-            
-            section.bg-light .btn {
-                font-size: 1.1rem !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -159,8 +92,8 @@
         <div class="nav-wrapper">
         <ul class="navbar-nav">
           <li><a href="#0924419094"><i class="fas fa-phone"></i> +(225) 07 59 96 24 96</a></li>
-          <li><a href="mailto:support@ecommerce.fr"><i class="fas fa-envelope ml-3"></i> Manu@style.co</a></li>
-          <li><a href="#"><i class="fas fa-map-marker ml-3"></i> Abidjan</a></li>
+          <li><a href="mailto:support@ecommerce.fr"><i class="fas fa-envelope ml-3"></i>Manu@style.co</a></li>
+          <li><a href="#"><i class="fas fa-map-marker ml-3"></i>Abidjan</a></li>
         </ul>
         <ul class="navbar-nav">
           {% if request.user.is_authenticated %}
@@ -178,14 +111,14 @@
             </div>
           </li>
           <li>
-            <a href="{{ logout_url }}"><i class="fas fa-sign-out-alt"></i> Se déconnecter</a>
+            <a href="{{ logout_url }}"><i class="fas fa-sign-out-alt"></i>Se déconnecter</a>
           </li>
           {% else %}
           <li class="active mr-3">
-            <a href="{{ register_url }}"><i class="fas fa-user-plus"></i> Inscription</a>
+            <a href="{{ register_url }}"><i class="fas fa-user-plus"></i>Inscription</a>
           </li>
           <li>
-            <a href="{{ login_url }}"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+            <a href="{{ login_url }}"><i class="fas fa-sign-in-alt"></i>Connexion</a>
           </li>
           {% endif %}
         </ul>
@@ -260,9 +193,9 @@
               <ul>
                 <h5>À PROPOS DE NOUS</h5>
                 <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>              
-                <li><i class="fas fa-map-marker"></i> Abidjan, Cocody ABATTA</li>
-                <li><i class="fas fa-phone"></i> +225 07 59 96 24 96</li>
-                <li><i class="fas fa-envelope"></i> Manu@style.co</li>
+                <li><i class="fas fa-map-marker"></i>Abidjan , Cocody ABATTA</li>
+                <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
+                <li><i class="fas fa-envelope"></i>Manu@style.co</li>
               </ul>
             </div>
             <div class="col-md-2 mr-3">
