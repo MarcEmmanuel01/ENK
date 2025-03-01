@@ -1,39 +1,30 @@
+# projet/urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views  # Import des vues locales si elles existent (ex: HomePage, about_page)
+from . import views  # Import des vues locales
 from carts.views import cart_home  # Vue principale du panier
 
 urlpatterns = [
     # Page d'accueil
     path('', views.HomePage.as_view(), name='home'),
-    
     # À propos
     path('about/', views.about_page, name='about'),
-    
     # Page de contact
     path('contact/', views.contact_page, name='contact'),
-    
     # Comptes utilisateurs
-    path('accounts/', include('accounts.urls')),  
-    
+    path('accounts/', include('accounts.urls')),
     # Produits
-    path('products/', include('products.urls')),  # Routes pour l'application "products"
-    
+    path('products/', include('products.urls')),
     # Tags
-    path('tags/', include('tags.urls')),  # Routes pour l'application "tags"
-    
+    path('tags/', include('tags.urls')),
     # Recherche
-    path('search/', include('search.urls')),  # Routes pour l'application "search"
-    
+    path('search/', include('search.urls')),
     # Panier
-    path('cart/', include('carts.urls')),  # Routes pour l'application "carts"
-    
-
-
+    path('cart/', include('carts.urls')),
     # Administration
-    path('admin/', admin.site.urls),  # Administration Django
+    path('admin/', admin.site.urls),
 ]
 
 # Ajout des fichiers statiques et médias en mode DEBUG

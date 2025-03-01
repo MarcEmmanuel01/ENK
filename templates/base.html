@@ -210,64 +210,153 @@
       }
     </style>
 
-    
-    {% block content %}{% endblock content %}
-    <section class="bg-light py-4 text-center" style="border-top: 2px solid #ddd;">
-      <div class="container d-flex flex-column align-items-center">
-          <h2 class="mb-3 font-weight-bold text-uppercase" style="font-size: 2rem; color: #333;">
-              🎉 Rejoignez-nous dès maintenant ! 🎉
-          </h2>
-          
-          <p class="lead mb-2" style="font-size: 1.2rem; max-width: 550px; color: #555;">
-              Créez un compte et profitez de nos offres exclusives, réductions et nouveautés !
-          </p>
-  
-          <!-- Bouton d'inscription stylé avec moins d'espace autour -->
-          <a href="{% url 'register' %}" class="btn btn-lg btn-primary shadow-lg px-4 py-2 mt-2"
-             style="font-size: 1.3rem; border-radius: 40px; font-weight: bold;">
-              🚀 S'inscrire maintenant !
-          </a>
-      </div>
-  </section>  
-  
+{% block content %}{% endblock content %}
 
-  <footer>
+<style>
+    /* Section Rejoignez-nous */
+    .join-section {
+        border-top: 2px solid #ddd;
+        padding: 20px 0; /* Réduit de py-4 (32px) à 20px */
+        background: #f8f9fa;
+    }
+    .join-section h2 {
+        font-size: 1.5rem; /* Réduit de 2rem à 1.5rem */
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 10px; /* Réduit de 15px à 10px */
+    }
+    .join-section p {
+        font-size: 1rem; /* Réduit de 1.2rem à 1rem */
+        color: #555;
+        max-width: 500px;
+        margin-bottom: 10px; /* Réduit de 15px à 10px */
+    }
+    .join-section .btn {
+        font-size: 1rem; /* Réduit de 1.3rem à 1rem */
+        padding: 8px 20px; /* Réduit de px-4 py-2 à 8px 20px */
+        border-radius: 30px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Footer */
+    #top-footer {
+        padding: 30px 0; /* Réduit de py-5 (40px) à 30px */
+    }
+    #top-footer h5 {
+        font-size: 1.1rem; /* Réduit pour compacité */
+        margin-bottom: 10px;
+    }
+    #top-footer ul {
+        list-style: none;
+        padding: 0;
+    }
+    #top-footer li {
+        font-size: 0.9rem; /* Réduit pour compacité */
+        margin-bottom: 8px; /* Réduit de 10px à 8px */
+    }
+    #top-footer li i {
+        margin-right: 8px;
+    }
+    #bottom-footer {
+        padding: 15px 0; /* Réduit de py-5 (40px) à 15px */
+        background: #e9ecef;
+    }
+    #bottom-footer .copyright {
+        font-size: 0.85rem; /* Réduit pour compacité */
+        color: #555;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 767px) {
+        .join-section {
+            padding: 15px 0; /* Encore plus compact sur mobile */
+        }
+        .join-section h2 {
+            font-size: 1.25rem; /* Réduit sur mobile */
+        }
+        .join-section p {
+            font-size: 0.9rem;
+            max-width: 100%;
+            padding: 0 10px;
+        }
+        .join-section .btn {
+            font-size: 0.9rem;
+            padding: 6px 15px;
+        }
+        #top-footer {
+            padding: 20px 0;
+        }
+        #top-footer .col-md-4,
+        #top-footer .col-md-2 {
+            margin-bottom: 20px; /* Espacement entre sections empilées */
+        }
+        #top-footer h5 {
+            font-size: 1rem;
+        }
+        #top-footer li {
+            font-size: 0.85rem;
+        }
+        #bottom-footer {
+            padding: 10px 0;
+        }
+        #bottom-footer .copyright {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<section class="join-section text-center">
+    <div class="container d-flex flex-column align-items-center">
+        <h2 class="text-uppercase">
+            🎉 Rejoignez-nous dès maintenant ! 🎉
+        </h2>
+        <p class="lead">
+            Créez un compte et profitez de nos offres exclusives, réductions et nouveautés !
+        </p>
+        <a href="{% url 'register' %}" class="btn btn-lg btn-primary">
+            🚀 S'inscrire maintenant !
+        </a>
+    </div>
+</section>
+
+<footer>
     <section id="top-footer">
-      <div class="container">
-        <div class="row py-5 px-4">
-          <div class="col-md-4">
-            <ul>
-              <h5>À PROPOS DE NOUS</h5>
-              <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>              
-              <li><i class="fas fa-map-marker"></i>Abidjan , Cocody ABATTA</li>
-              <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
-              <li><i class="fas fa-envelope"></i>Manu@style.co</li>
-            </ul>
-          </div>
-          <div class="col-md-2 mr-3">
-            <ul>
-              <h5>CATEGORIES</h5>
-              <li><a href="{% url 'home' %}">Accueil</a></li>
-              <li><a href="{% url 'about' %}">À propos</a></li>
-              <li><a href="{% url 'contact' %}">Contact</a></li>
-              <li><a href="{% url 'products' %}">Produits</a></li>
-              <li><a href="{% url 'cart' %}">Panier</a></li>
-          </ul>
-          </div>
+        <div class="container">
+            <div class="row px-4">
+                <div class="col-md-4">
+                    <ul>
+                        <h5>À PROPOS DE NOUS</h5>
+                        <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>
+                        <li><i class="fas fa-map-marker"></i>Abidjan, Cocody ABATTA</li>
+                        <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
+                        <li><i class="fas fa-envelope"></i>Manu@style.co</li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mr-3">
+                    <ul>
+                        <h5>CATEGORIES</h5>
+                        <li><a href="{% url 'home' %}">Accueil</a></li>
+                        <li><a href="{% url 'about' %}">À propos</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                        <li><a href="{% url 'products' %}">Produits</a></li>
+                        <li><a href="{% url 'cart' %}">Panier</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
     <section class="py-5" id="bottom-footer">
-      <div class="container text-center">
-        <span class="copyright">
-          Copyright &copy; <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a target="_blank">Kassi Marc Emmanuel</a>
-        </span>
-      </div>
+        <div class="container text-center">
+            <span class="copyright">
+                Copyright © <script>document.write(new Date().getFullYear());</script> Tous droits réservés | Créé par <a target="_blank">Kassi Marc Emmanuel</a>
+            </span>
+        </div>
     </section>
-  </footer>
+</footer>
 
-  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-  <script src="{% static 'js/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

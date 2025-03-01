@@ -5,36 +5,269 @@
 {% block title %}Panier d'achat{% endblock title %}
 
 {% block content %}
+<style>
+    /* Styles généraux */
+    .section {
+        padding: 40px 0;
+    }
+    .cart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        position: relative;
+    }
+    .title-1 {
+        font-size: 1.5rem;
+        text-align: left;
+        display: inline-block;
+        margin: 0px;
+        width: 100%;
+    }
+    .title-line {
+        width: 100px;
+        height: 4px;
+    }
+    
+    /* Style du bouton retour */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background-color: #f8f9fa;
+        color: #495057;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-right: 15px;
+    }
+    .btn-back:hover {
+        background-color: #e9ecef;
+        color: #212529;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .btn-back i {
+        margin-right: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .table-responsive {
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+    .table {
+        margin-bottom: 0;
+        width: 100%;
+    }
+    .table thead th {
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 15px;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #343a40;
+        color: #fff;
+    }
+    .table tbody td {
+        font-size: 0.95rem;
+        padding: 12px 15px;
+        vertical-align: middle;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+    .table tfoot td {
+        padding: 15px;
+        font-size: 1rem;
+    }
+    .quantity-selector {
+        max-width: 140px;
+        margin: 0 auto;
+    }
+    .quantity-input {
+        width: 50px;
+        font-size: 0.95rem;
+        padding: 0;
+        text-align: center;
+    }
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+    .btn i {
+        margin-right: 5px;
+    }
+    .cart-actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        gap: 20px;
+    }
+    .cart-actions .btn-danger,
+    .cart-actions .btn-success {
+        flex: 0 0 200px;
+        margin: 0;
+        font-weight: 500;
+    }
+    .empty-cart {
+        text-align: center;
+        padding: 50px 0;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+    .empty-cart p {
+        font-size: 1.2rem;
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+    
+    /* Liens produits */
+    .product-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    .product-link:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+
+    /* Responsive Design pour petits écrans */
+    @media (max-width: 767px) {
+        .section {
+            padding: 20px 0;
+        }
+        .cart-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .btn-back {
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+        .title-1 {
+            font-size: 1.5rem;
+        }
+        .title-line {
+            width: 60px;
+            margin-top: 8px;
+        }
+        .table-responsive {
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .table {
+            display: block;
+            width: 100%;
+        }
+        .table thead {
+            display: none; /* Masquer les en-têtes sur mobile */
+        }
+        .table tbody, .table tr, .table td {
+            display: block;
+            width: 100%;
+        }
+        .table tbody tr {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 15px;
+        }
+        .table tbody td {
+            padding: 10px 15px;
+            position: relative;
+            text-align: left;
+        }
+        .table tbody td:before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #2d3748;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .table tfoot {
+            display: block;
+        }
+        .table tfoot tr {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+        }
+        .table tfoot td {
+            display: block;
+            text-align: right;
+        }
+        .quantity-selector {
+            justify-content: flex-start;
+            max-width: 100%;
+        }
+        .btn {
+            font-size: 0.85rem;
+            padding: 8px 15px;
+        }
+        .cart-actions {
+            flex-direction: column;
+            gap: 15px;
+        }
+        .cart-actions .btn-danger,
+        .cart-actions .btn-success {
+            width: 100%;
+            flex: none;
+        }
+    }
+</style>
+
 <div class="section">
     <div class="container">
-        <div class="title-1">
-            Panier d'achat
+        <div class="cart-header">
+            <a href="{% url 'product_list' %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <div>
+                <h1 class="title-1">Panier d'achat</h1>
+                <div class="title-line"></div>
+            </div>
+            {% if cart_items %}
+            <div class="cart-summary">
+                <span class="badge bg-primary">{{ cart_items|length }} article(s)</span>
+            </div>
+            {% endif %}
         </div>
-        <div class="title-line mb-5"></div>
 
         {% if cart_items %}
         <!-- Table des produits dans le panier -->
-        <div class="table-responsive" style="box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 0.3); background: #fff;">
+        <div class="table-responsive">
             <table class="table">
-                <thead class="bg-dark text-light">
+                <thead>
                     <tr>
                         <th>#</th>
                         <th>Nom du produit</th>
                         <th>Prix unitaire</th>
                         <th>Quantité</th>
                         <th>Total</th>
-                        <th>Retirer</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in cart_items %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>
-                            <a href="{{ item.product.get_absolute_url }}">{{ item.product.title|title }}</a>
+                        <td data-label="Numero du produit">{{ forloop.counter }}</td>
+                        <td data-label="Nom du produit">
+                            <a href="{{ item.product.get_absolute_url }}" class="product-link">{{ item.product.title|title }}</a>
                         </td>
-                        <td>{{ item.product.price }} FCFA</td>
-                        <td>
+                        <td data-label="Prix unitaire">{{ item.product.price }} FCFA</td>
+                        <td data-label="Quantité">
                             <!-- Formulaire pour ajuster la quantité -->
                             <form method="POST" action="{% url 'update' %}">
                                 {% csrf_token %}
@@ -50,14 +283,14 @@
                                 </div>
                             </form>
                         </td>
-                        <td>{{ item.product.price|mul:item.quantity|floatformat:2 }} FCFA</td>
-                        <td>
+                        <td data-label="Total">{{ item.product.price|mul:item.quantity|floatformat:2 }} FCFA</td>
+                        <td data-label="Action">
                             <!-- Formulaire pour retirer un article -->
                             <form method="POST" action="{% url 'update' %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="product_id" value="{{ item.product.id }}">
                                 <button type="submit" class="btn btn-outline-danger" name="action" value="remove">
-                                    <i class="far fa-window-close"></i>
+                                    <i class="far fa-trash-alt"></i> Retirer
                                 </button>
                             </form>
                         </td>
@@ -67,24 +300,28 @@
                 <tfoot>
                     <tr class="bg-light">
                         <td colspan="4" class="text-end"><strong>Total :</strong></td>
-                        <td><strong>{{ cart.total|floatformat:2 }} FCFA</strong></td>
-                        <td></td>
+                        <td colspan="2" class="text-center"><strong>{{ cart.total|floatformat:2 }} FCFA</strong></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
 
         <!-- Boutons pour gérer le panier -->
-        <div class="mt-4">
+        <div class="cart-actions">
             <a href="{% url 'clear_cart' %}" class="btn btn-danger">
                 <i class="fas fa-trash-alt"></i> Vider le panier
             </a>
-            <a href="{% url 'place_order' %}" class="btn btn-success float-end">
+            <a href="{% url 'place_order' %}" class="btn btn-success">
                 <i class="fas fa-shopping-cart"></i> Passer la commande
             </a>
         </div>
         {% else %}
-        <p class="text-center lead">Votre panier est vide.</p>
+        <div class="empty-cart">
+            <p>Votre panier est actuellement vide</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">
+                <i class="fas fa-shopping-bag"></i> Continuer vos achats
+            </a>
+        </div>
         {% endif %}
     </div>
 </div>

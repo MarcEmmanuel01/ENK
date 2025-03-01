@@ -4,89 +4,105 @@
 {% load static %}
 
 {% block content %}
+<style>
+    /* Uniquement pour corriger l'ordre des colonnes sur mobile */
+    @media (max-width: 767px) {
+        .order-mobile-1 {
+            order: 1;
+        }
+        .order-mobile-2 {
+            order: 2;
+        }
+    }
+    
+    /* Limiter la largeur du formulaire sur les grands écrans */
+    #registration-form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
 
 <div class="section">
     <div class="container" id="registration-wrapper">
-
-        <div class="title-1"><i class="fas fa-user-plus"></i>Inscription</div>
+        <div class="title-1"><i class="fas fa-user-plus"></i> Inscription</div>
         <div class="title-line mb-5"></div>
 
         <p class="text-center lead">Créez votre compte gratuitement</p>
 
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'error' %}
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i>{{ message }}
+        <div id="registration-form">
+            <form action="" method="POST">{% csrf_token %}
+                <div class="row">
+                    <div class="col-md-10 col-lg-8 mx-auto bs-dark mb-5 bg-white order-mobile-2" style="padding: 0px;">
+                        <div class="form-header-1 text-center lead">Informations personnelles</div>
+                        <div class="container-fluid">
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.first_name.label }}</div>
+                                <div class="input-group">{{ form.first_name }}</div>
+                                <span class="danger">{{ form.first_name.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.last_name.label }}</div>
+                                {{ form.last_name }}
+                                <span class="danger">{{ form.last_name.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.email.label }}</div>
+                                {{ form.email }}
+                                <span class="danger">{{ form.email.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.address.label }}</div>
+                                {{ form.address }}
+                                <span class="danger">{{ form.address.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.phone.label }}</div>
+                                {{ form.phone }}
+                                <span class="danger">{{ form.phone.errors }}</span>
+                            </div>
+                        </div>
                     </div>
-                {% else %}
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>{{ message }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+                </div>
 
-        <form action="" method="POST">{% csrf_token %}
-            <div class="row">
-                <div class="col bs-dark mr-5 mb-5 bg-white" style="padding: 0px;">
-                    <div class="form-header-1 text-center lead">Informations de connexion</div>
-                    <div class="container-fluid">
-                        <div class="form-group">
-                            <div class="col-form-label">Nom d'utilisateur</div>{{ form.username }}
-                            <span class="danger">{{ form.username.errors }}</span>
-                            <p class="text-muted small">Requis. 150 caractères ou moins. Lettres, chiffres et @/./+/-/_ uniquement.</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.password1.label }}</div>{{ form.password1 }}
-                            <span class="danger">{{ form.password1.errors }}</span>
-                            <p class="text-muted small">
-                                Le mot de passe ne doit pas être trop similaire à vos informations personnelles.<br>
-                                Le mot de passe doit contenir au moins 8 caractères.<br>
-                                Le mot de passe ne doit pas être un mot de passe couramment utilisé.<br>
-                                Le mot de passe ne doit pas être entièrement numérique.
-                            </p>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.password2.label }}</div>{{ form.password2 }}
-                            <span class="danger">{{ form.password2.errors }}</span>
-                            <p class="text-muted small">Saisissez le même mot de passe que précédemment pour vérification.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col bs-dark mb-5 bg-white" style="padding: 0px;">
-                    <div class="form-header-1 text-center lead">Informations personnelles</div>
-                    <div class="container-fluid">
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.first_name.label }}</div><div class="input-group">{{ form.first_name }}</div>
-                            <span class="danger">{{ form.first_name.errors }}</span>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.last_name.label }}</div>{{ form.last_name }}
-                            <span class="danger">{{ form.last_name.errors }}</span>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.email.label }}</div>{{ form.email }}
-                            <span class="danger">{{ form.email.errors }}</span>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.address.label }}</div>{{ form.address }}
-                            <span class="danger">{{ form.address.errors }}</span>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-form-label">{{ form.phone.label }}</div>{{ form.phone }}
-                            <span class="danger">{{ form.phone.errors }}</span>
+                <div class="row">
+                    <div class="col-md-10 col-lg-8 mx-auto bs-dark mb-5 bg-white order-mobile-1" style="padding: 0px;">
+                        <div class="form-header-1 text-center lead">Informations de connexion</div>
+                        <div class="container-fluid">
+                            <div class="form-group">
+                                <div class="col-form-label">Nom d'utilisateur</div>
+                                {{ form.username }}
+                                <span class="danger">{{ form.username.errors }}</span>
+                                <p class="text-muted small">Requis. 150 caractères ou moins. Lettres, chiffres et @/./+/-/_ uniquement.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.password1.label }}</div>
+                                {{ form.password1 }}
+                                <span class="danger">{{ form.password1.errors }}</span>
+                                <p class="text-muted small">
+                                    Le mot de passe ne doit pas être trop similaire à vos informations personnelles.<br>
+                                    Le mot de passe doit contenir au moins 8 caractères.<br>
+                                    Le mot de passe ne doit pas être un mot de passe couramment utilisé.<br>
+                                    Le mot de passe ne doit pas être entièrement numérique.
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-form-label">{{ form.password2.label }}</div>
+                                {{ form.password2 }}
+                                <span class="danger">{{ form.password2.errors }}</span>
+                                <p class="text-muted small">Saisissez le même mot de passe que précédemment pour vérification.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="text-center">
-                <input class="btn btn-outline-primary" type="submit" value="S'inscrire">
-            </div>
-            <div class="text-center text-muted">
-                <small>Vous avez déjà un compte ?</small><a href="{% url 'login' %}"> Connectez-vous</a>
-            </div>
-        </form>
+
+                <div class="text-center">
+                    <input class="btn btn-outline-primary" type="submit" value="S'inscrire">
+                </div>
+                <div class="text-center text-muted">
+                    <small>Vous avez déjà un compte ?</small> <a href="{% url 'login' %}">Connectez-vous</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock content %}
