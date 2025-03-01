@@ -166,9 +166,6 @@
         <a href="{% url 'product_list' %}" class="btn-back">
             <i class="fas fa-arrow-left"></i> Retour
         </a>
-        <a href="{% url 'cart' %}" class="btn-cart-link">
-            <i class="fas fa-shopping-cart"></i> Panier
-        </a>
     </div>
 
     <!-- Titre et métadonnées -->
@@ -185,59 +182,8 @@
                 <img src="{{ object.image.url }}" alt="{{ object.title }}">
             {% endif %}
         </div>
-
-        <!-- Détails du produit -->
-        <div class="col-md-6 product-details">
-            <!-- Marque -->
-            <p><strong>Marque :</strong> {{ object.brand }}</p>
-
-            <!-- Prix -->
-            <div class="price-wrapper">
-                {% if object.discount_price %}
-                    <span class="dismiss-text">{{ object.discount_price }} FCFA</span>
-                {% endif %}
-                <span class="price">{{ object.price }} FCFA</span>
-            </div>
-
-            <!-- Taille et couleur -->
-            <div class="size-color-wrapper">
-                <label for="size">Taille:</label>
-                <select name="size" id="size" class="custom-select">
-                    <option value="">Choisir</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
-
-                <label for="color">Couleur:</label>
-                <select name="color" id="color" class="custom-select">
-                    <option value="">Choisir</option>
-                    <option value="Rouge">Rouge</option>
-                    <option value="Bleu">Bleu</option>
-                    <option value="Vert">Vert</option>
-                    <option value="Noir">Noir</option>
-                </select>
-            </div>
-
             <!-- Description -->
             <p class="mt-3">{{ object.description|linebreaks }}</p>
-
-            <!-- Formulaire -->
-            <form method="POST" action="{% url 'add_to_cart' %}" class="form-product-ajax">
-                {% csrf_token %}
-                <input type="hidden" name="product_id" value="{{ object.id }}">
-
-                <!-- Nombre -->
-                <label for="quantity">Nombre:</label>
-                <input type="number" name="quantity" id="quantity" value="1" min="1" max="100">
-
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fa fa-shopping-cart"></i> Ajouter au panier
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
