@@ -5,13 +5,12 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from carts.views import add_to_cart
 
 from .models import Product
 from carts.models import Cart
 from .forms import ProductForm
 
-
-# ✅ Vue pour la liste des produits
 class ProductListView(ListView):
     model = Product
     template_name = "products/produit.html"
@@ -23,8 +22,6 @@ class ProductListView(ListView):
         context["cart"] = cart_obj
         return context
 
-
-# ✅ Vue pour les détails d'un produit
 class ProductDetailView(DetailView):
     model = Product
     template_name = "products/product_detail.html"
@@ -35,8 +32,6 @@ class ProductDetailView(DetailView):
         context["cart"] = cart_obj
         return context
 
-
-# ✅ Vue pour ajouter un produit (réservée aux administrateurs)
 @user_passes_test(lambda user: user.is_authenticated and user.is_superuser)
 def add_product(request):
     if request.method == "POST":
@@ -44,19 +39,16 @@ def add_product(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Produit ajouté avec succès.")
-            return redirect("products")  # Redirige vers la liste des produits
+            return redirect("products")
     else:
         form = ProductForm()
     return render(request, "products/add_product.html", {"form": form})
 
-
-# ✅ Vue pour gérer les produits (réservée aux administrateurs)
 @staff_member_required
 def manage_products(request):
     products = Product.objects.all()
     
     if request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Gestion AJAX pour la suppression
         product_id = request.POST.get("product_id")
         product = get_object_or_404(Product, id=product_id)
         product.delete()
@@ -64,38 +56,35 @@ def manage_products(request):
 
     return render(request, "products/manage_products.html", {"products": products})
 
-
-# ✅ Vue AJAX pour ajouter ou retirer un produit du panier
 @require_POST
 def update_cart(request):
     product_id = request.POST.get('product_id')
-    
-    try:
-        product = Product.objects.get(id=product_id)
-        cart_obj, _ = Cart.objects.new_or_get(request)
+    quantity = request.POST.get('quantity', 1)
+    size = request.POST.get('size', 'M')
 
-        if product in cart_obj.products.all():
-            cart_obj.products.remove(product)
-            action = 'removed'
-        else:
-            cart_obj.products.add(product)
-            action = 'added'
-        
-        return JsonResponse({
-            'success': True,
-            'message': f'Produit {action} avec succès',
-            'cart_count': cart_obj.products.count(),
-            'is_in_cart': product in cart_obj.products.all()
-        })
+    try:
+        request.POST = request.POST.copy()
+        request.POST['product_id'] = product_id
+        request.POST['quantity'] = quantity
+        request.POST['size'] = size
+
+        response = add_to_cart(request)
+
+        if isinstance(response, JsonResponse):
+            data = response.getvalue().decode('utf-8')
+            import json
+            json_data = json.loads(data)
+            cart_obj, _ = Cart.objects.new_or_get(request)
+            json_data['cart_count'] = cart_obj.cart_items.count()
+            return JsonResponse(json_data)
+
+        return redirect('cart_home')
 
     except Product.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Produit non trouvé'}, status=404)
-    
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
-
-# ✅ Vue alternative pour afficher la liste des produits
 def products(request):
     products = Product.objects.all()
     cart_obj, _ = Cart.objects.new_or_get(request)

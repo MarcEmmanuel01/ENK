@@ -6,18 +6,17 @@ from .models import Cart, CartItem, Order, OrderItem
 from django.utils.crypto import get_random_string
 from django.views.decorators.http import require_POST
 
-# ✅ Vue principale du panier
 def cart_home(request):
     cart, _ = Cart.objects.new_or_get(request)
     cart_items = cart.cart_items.all()
+    print(f"Cart items: {list(cart_items.values('product__id', 'size', 'quantity'))}")
     return render(request, "carts/home.html", {'cart': cart, 'cart_items': cart_items})
 
-
-# ✅ Ajouter un produit au panier
 @require_POST
 def add_to_cart(request):
     product_id = request.POST.get("product_id")
     quantity = int(request.POST.get("quantity", 1))
+    size = request.POST.get("size") or "M"
 
     if quantity <= 0:
         messages.error(request, "Veuillez sélectionner une quantité valide.")
@@ -26,7 +25,11 @@ def add_to_cart(request):
     cart, _ = Cart.objects.new_or_get(request)
     product = get_object_or_404(Product, id=product_id)
 
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart,
+        product=product,
+        size=size
+    )
     if created:
         cart_item.quantity = quantity
     else:
@@ -42,15 +45,39 @@ def add_to_cart(request):
     messages.success(request, f"{quantity} x {product.title} ajouté(s) au panier.")
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
-# ✅ Mettre à jour le panier (augmenter, diminuer, supprimer)
 @require_POST
 def cart_update(request):
+    print("Entrée dans cart_update")
     product_id = request.POST.get("product_id")
+    size = request.POST.get("size", "M")
     action = request.POST.get("action")
-    cart, _ = Cart.objects.new_or_get(request)
 
-    cart_item = CartItem.objects.filter(cart=cart, product__id=product_id).first()
+    print(f"POST data: {request.POST}")
+    print(f"product_id: {product_id}, size: {size}, action: {action}")
+
+    if not product_id or action not in ['increase', 'decrease', 'remove']:
+        return JsonResponse({
+            'success': False,
+            'message': f"Requête invalide - product_id: {product_id}, action: {action}"
+        }, status=400)
+
+    cart, _ = Cart.objects.new_or_get(request)
+    cart_item = CartItem.objects.filter(
+        cart=cart,
+        product__id=product_id,
+        size=size
+    ).first()
+
+    if not cart_item and size == "M":
+        cart_item = CartItem.objects.filter(
+            cart=cart,
+            product__id=product_id,
+            size=None
+        ).first()
+        if cart_item:
+            cart_item.size = "M"
+            cart_item.save()
+
     if not cart_item:
         return JsonResponse({'success': False, 'message': "Article non trouvé dans le panier"}, status=404)
 
@@ -68,17 +95,16 @@ def cart_update(request):
 
     cart.update_totals()
     request.session['cart_items'] = cart.cart_items.count()
+    item_quantity = cart_item.quantity if cart_item and cart_item.pk else 0
 
-    # Renvoie la nouvelle quantité de l'article et le total du panier
     return JsonResponse({
         'success': True,
         'cart_total': float(cart.total),
-        'item_quantity': cart_item.quantity if cart_item.exists() else 0,
-        'cart_count': cart.products.count()
+        'item_quantity': item_quantity,
+        'cart_count': cart.cart_items.count()
     })
 
-
-# ✅ Vider le panier
+@require_POST
 def clear_cart(request):
     cart, _ = Cart.objects.new_or_get(request)
     cart.cart_items.all().delete()
@@ -93,21 +119,32 @@ def clear_cart(request):
     messages.success(request, "Le panier a été vidé.")
     return redirect("cart_home")
 
-
-# ✅ Obtenir le nombre total d'articles dans le panier
 def items_count(request):
     cart, _ = Cart.objects.new_or_get(request)
     total_items = sum(item.quantity for item in cart.cart_items.all())
     return JsonResponse({"count": total_items})
 
-
-# ✅ Supprimer un produit du panier
 @require_POST
 def remove_from_cart(request):
     product_id = request.POST.get("product_id")
+    size = request.POST.get("size", "M")
     cart, _ = Cart.objects.new_or_get(request)
 
-    cart_item = CartItem.objects.filter(cart=cart, product_id=product_id).first()
+    cart_item = CartItem.objects.filter(
+        cart=cart,
+        product_id=product_id,
+        size=size
+    ).first()
+    if not cart_item and size == "M":
+        cart_item = CartItem.objects.filter(
+            cart=cart,
+            product_id=product_id,
+            size=None
+        ).first()
+        if cart_item:
+            cart_item.size = "M"
+            cart_item.save()
+
     if cart_item:
         cart_item.delete()
         cart.update_totals()
@@ -117,8 +154,6 @@ def remove_from_cart(request):
 
     return redirect("cart_home")
 
-
-# ✅ Passer une commande
 def place_order(request):
     cart, _ = Cart.objects.new_or_get(request)
     cart_items = cart.cart_items.all()
@@ -146,7 +181,7 @@ def place_order(request):
             district=district,
             address=address,
             notes=notes,
-            total_price=cart.total + 1000  # Ajout des frais de livraison
+            total_price=cart.total + 1000
         )
 
         for item in cart_items:
@@ -154,7 +189,8 @@ def place_order(request):
                 order=order,
                 product=item.product,
                 quantity=item.quantity,
-                price=item.product.price * item.quantity
+                price=item.get_total_item_price(),
+                size=item.size or "M"
             )
 
         cart_items.delete()
@@ -170,8 +206,6 @@ def place_order(request):
 
     return render(request, "carts/checkout.html", {"cart": cart, "cart_items": cart_items})
 
-
-# ✅ Confirmation de commande
 def order_confirmation(request):
     last_order = None
     if request.user.is_authenticated:

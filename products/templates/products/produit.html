@@ -500,7 +500,9 @@
                 const isInCart = button.classList.contains('remove-btn');
                 const action = button.getAttribute('data-action');
                 const formData = new FormData(form);
-                formData.append('action', action);
+
+                console.log('Action:', action);
+                console.log('FormData:', Array.from(formData.entries()));
 
                 button.disabled = true;
                 button.classList.add('loading');
@@ -515,6 +517,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Response:', data);
                     if (data.success) {
                         if (isInCart) {
                             button.classList.remove('remove-btn');
@@ -527,7 +530,6 @@
                             button.setAttribute('data-action', 'remove');
                             button.innerHTML = '<i class="fas fa-shopping-cart"></i> Retirer du panier';
                         }
-                        // Mettre à jour le compteur du panier dans base.html
                         const cartCountElement = document.querySelector('.cart-count');
                         if (cartCountElement) {
                             cartCountElement.textContent = data.cart_count;

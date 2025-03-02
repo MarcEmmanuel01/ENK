@@ -8,8 +8,8 @@
     .section { padding: 40px 0; }
     .cart-header {
         display: flex;
-        flex-direction: column; /* Empile les éléments verticalement */
-        align-items: flex-start; /* Alignement à gauche */
+        flex-direction: column;
+        align-items: flex-start;
         margin-bottom: 25px;
         position: relative;
     }
@@ -37,7 +37,7 @@
         transition: all 0.3s ease;
         border: 1px solid #dee2e6;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 15px; /* Espace entre le bouton et le titre */
+        margin-bottom: 15px;
     }
     .btn-back:hover {
         background-color: #e9ecef;
@@ -120,7 +120,7 @@
         text-decoration: underline;
     }
     .cart-summary {
-        align-self: flex-end; /* Place le badge à droite sur la ligne du bas */
+        align-self: flex-end;
     }
     .btn.loading::after {
         content: '';
@@ -139,10 +139,7 @@
     }
     @media (max-width: 767px) {
         .section { padding: 20px 0; }
-        .cart-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+        .cart-header { flex-direction: column; align-items: flex-start; }
         .btn-back { margin-bottom: 15px; }
         .title-1 { font-size: 1.5rem; }
         .title-line { width: 60px; margin-top: 8px; }
@@ -219,7 +216,7 @@
                         <td data-label="Nom du produit">
                             <a href="{{ item.product.get_absolute_url }}" class="product-link">{{ item.product.title|title }}</a>
                         </td>
-                        <td data-label="Taille">{{ item.size|default:"N/A" }}</td>
+                        <td data-label="Taille">{{ item.size|default:"M" }}</td>
                         <td data-label="Prix unitaire">{{ item.product.price }} FCFA</td>
                         <td data-label="Quantité">
                             <form class="cart-update-form" method="POST" action="{% url 'cart_update' %}">
@@ -297,17 +294,28 @@
         return cookieValue;
     }
     const csrftoken = getCookie('csrftoken');
+    console.log('CSRF Token:', csrftoken);
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Gestion AJAX pour les formulaires de mise à jour du panier
         const forms = document.querySelectorAll('.cart-update-form');
         forms.forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const button = form.querySelector('button[type="submit"]');
-                const action = button.getAttribute('name') === 'action' ? button.value : 'update';
+                const button = e.submitter;  // Récupérer le bouton qui a déclenché la soumission
+                const action = button.value;  // Récupérer la valeur du bouton cliqué
                 const formData = new FormData(form);
+                console.log('Button value:', button.value);  // Log pour vérifier la valeur du bouton
+                console.log('Initial FormData:', Array.from(formData.entries()));
+
+                // Ajouter explicitement l’action si elle n’est pas déjà présente
+                if (!formData.has('action')) {
+                    formData.append('action', action);
+                }
+
+                console.log('Action:', action);
+                console.log('Final FormData:', Array.from(formData.entries()));
+
                 const row = form.closest('tr');
                 const quantityInput = row.querySelector('.quantity-input');
                 const totalCell = row.querySelector('[data-total]');
@@ -325,17 +333,24 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Response:', data);
                     if (data.success) {
+                        console.log('Mise à jour réussie, nouvelle quantité:', data.item_quantity);
                         if (action === 'remove') {
+                            console.log('Suppression de l’élément');
                             row.remove();
                             if (!document.querySelector('tbody tr')) {
-                                location.reload(); // Recharge si le panier est vide
+                                console.log('Panier vide, rechargement');
+                                location.reload();
                             }
                         } else if (action === 'increase' || action === 'decrease') {
                             const newQuantity = data.item_quantity;
+                            console.log('Nouvelle quantité:', newQuantity);
                             if (newQuantity <= 0) {
+                                console.log('Quantité <= 0, suppression de l’élément');
                                 row.remove();
                             } else {
+                                console.log('Mise à jour de la quantité dans l’interface');
                                 quantityInput.value = newQuantity;
                                 const price = parseFloat(totalCell.getAttribute('data-total')) / parseFloat(quantityInput.getAttribute('data-quantity'));
                                 totalCell.textContent = (price * newQuantity).toFixed(2) + ' FCFA';
@@ -343,11 +358,11 @@
                                 quantityInput.setAttribute('data-quantity', newQuantity);
                             }
                         }
-                        // Mettre à jour le total du panier
+                        console.log('Mise à jour du total:', data.cart_total);
                         document.getElementById('cart-total').textContent = data.cart_total.toFixed(2) + ' FCFA';
-                        // Mettre à jour le compteur global du panier
                         const cartCountElement = document.querySelector('.cart-count');
                         if (cartCountElement) {
+                            console.log('Mise à jour du compteur:', data.cart_count);
                             cartCountElement.textContent = data.cart_count;
                         }
                     } else {
@@ -365,7 +380,6 @@
             });
         });
 
-        // Gestion AJAX pour vider le panier
         const clearForm = document.querySelector('.clear-cart-form');
         if (clearForm) {
             clearForm.addEventListener('submit', function(e) {
@@ -385,7 +399,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.querySelector('.cart-count').textContent = '0'; // Réinitialiser le compteur global
+                        document.querySelector('.cart-count').textContent = '0';
                         location.reload();
                     }
                 })
