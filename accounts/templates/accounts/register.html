@@ -36,27 +36,27 @@
                         <div class="form-header-1 text-center lead">Informations personnelles</div>
                         <div class="container-fluid">
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.first_name.label }}</div>
+                                <div class="col-form-label">Nom</div>
                                 <div class="input-group">{{ form.first_name }}</div>
                                 <span class="danger">{{ form.first_name.errors }}</span>
                             </div>
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.last_name.label }}</div>
+                                <div class="col-form-label">Prenom</div>
                                 {{ form.last_name }}
                                 <span class="danger">{{ form.last_name.errors }}</span>
                             </div>
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.email.label }}</div>
+                                <div class="col-form-label">Email</div>
                                 {{ form.email }}
                                 <span class="danger">{{ form.email.errors }}</span>
                             </div>
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.address.label }}</div>
+                                <div class="col-form-label">Adresse</div>
                                 {{ form.address }}
                                 <span class="danger">{{ form.address.errors }}</span>
                             </div>
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.phone.label }}</div>
+                                <div class="col-form-label">Numéro de telephone</div>
                                 {{ form.phone }}
                                 <span class="danger">{{ form.phone.errors }}</span>
                             </div>
@@ -75,7 +75,7 @@
                                 <p class="text-muted small">Requis. 150 caractères ou moins. Lettres, chiffres et @/./+/-/_ uniquement.</p>
                             </div>
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.password1.label }}</div>
+                                <div class="col-form-label">Mot de passe</div>
                                 {{ form.password1 }}
                                 <span class="danger">{{ form.password1.errors }}</span>
                                 <p class="text-muted small">
@@ -86,7 +86,7 @@
                                 </p>
                             </div>
                             <div class="form-group">
-                                <div class="col-form-label">{{ form.password2.label }}</div>
+                                <div class="col-form-label">Confirmez votre mot de passe</div>
                                 {{ form.password2 }}
                                 <span class="danger">{{ form.password2.errors }}</span>
                                 <p class="text-muted small">Saisissez le même mot de passe que précédemment pour vérification.</p>
@@ -105,4 +105,15 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let firstNameField = document.querySelector("input[name='first_name']");
+        if (firstNameField) {
+            firstNameField.focus();
+        }
+    });
+    </script>
+    
 {% endblock content %}

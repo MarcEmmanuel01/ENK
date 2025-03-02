@@ -48,42 +48,42 @@ def add_product(request):
 def manage_products(request):
     products = Product.objects.all()
     
-    if request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
         product_id = request.POST.get("product_id")
         product = get_object_or_404(Product, id=product_id)
         product.delete()
-        return JsonResponse({'success': True, 'message': 'Produit supprimé avec succès'})
+        return JsonResponse({"success": True, "message": "Produit supprimé avec succès"})
 
     return render(request, "products/manage_products.html", {"products": products})
 
 @require_POST
 def update_cart(request):
-    product_id = request.POST.get('product_id')
-    quantity = request.POST.get('quantity', 1)
-    size = request.POST.get('size', 'M')
+    product_id = request.POST.get("product_id")
+    quantity = request.POST.get("quantity", 1)
+    size = request.POST.get("size", "M")
 
     try:
         request.POST = request.POST.copy()
-        request.POST['product_id'] = product_id
-        request.POST['quantity'] = quantity
-        request.POST['size'] = size
+        request.POST["product_id"] = product_id
+        request.POST["quantity"] = quantity
+        request.POST["size"] = size
 
         response = add_to_cart(request)
 
         if isinstance(response, JsonResponse):
-            data = response.getvalue().decode('utf-8')
+            data = response.getvalue().decode("utf-8")
             import json
             json_data = json.loads(data)
             cart_obj, _ = Cart.objects.new_or_get(request)
-            json_data['cart_count'] = cart_obj.cart_items.count()
+            json_data["cart_count"] = cart_obj.cart_items.count()
             return JsonResponse(json_data)
 
-        return redirect('cart_home')
+        return redirect("cart_home")
 
     except Product.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Produit non trouvé'}, status=404)
+        return JsonResponse({"success": False, "message": "Produit non trouvé"}, status=404)
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+        return JsonResponse({"success": False, "message": str(e)}, status=500)
 
 def products(request):
     products = Product.objects.all()

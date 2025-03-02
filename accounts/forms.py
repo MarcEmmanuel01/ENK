@@ -7,7 +7,7 @@ from .models import *
 
 class RegistrationForm(UserCreationForm):
     username = forms.CharField(
-        max_length=30, widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+        max_length=30, widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',}),
         label="Username", )
 
     first_name = forms.CharField(
