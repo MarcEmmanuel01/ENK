@@ -23,9 +23,9 @@
             color: #ffffff;
         }
         
-        /* Style pour la bannière défilante */
+        /* Style pour la bannière défilante - Couleur modifiée */
         .marquee-container {
-            background-color: #2c3e50;
+            background-color: #27ae60; /* Changement de couleur (vert) */
             color: #ffffff;
             padding: 8px 0;
             overflow: hidden;
@@ -48,7 +48,7 @@
         
         /* Icône pour le texte défilant */
         .marquee-text i {
-            color: #e74c3c;
+            color: #ffffff;
             margin-right: 10px;
         }
         
@@ -79,10 +79,96 @@
             font-size: 12px;
             font-weight: bold;
         }
+        
+        /* Style pour la barre d'authentification */
+        .auth-bar {
+            background-color: #f8f9fa;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            justify-content: space-between; /* Modifié: espace entre les boutons */
+            align-items: center;
+            width: 100%; /* Pour occuper toute la largeur */
+        }
+        
+        .auth-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+        
+        .auth-btn i {
+            margin-right: 8px;
+        }
+        
+        .login-btn {
+            color: #fff;
+            background-color: #6c757d;
+            border: 1px solid #6c757d;
+            margin-right: auto; /* Pousse vers la gauche */
+        }
+        
+        .login-btn:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            color: #fff;
+        }
+        
+        .register-btn {
+            color: #fff;
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            margin-left: auto; /* Pousse vers la droite */
+        }
+        
+        .register-btn:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: flex-end;
+        }
+        
+        .user-profile .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .user-profile .dropdown-toggle:hover {
+            text-decoration: none;
+        }
+        
+        .user-avatar {
+            margin-right: 8px;
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+        
+        .welcome-text {
+            color: #6c757d;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <!-- Bannière défilante -->
+    <!-- Bannière défilante avec nouvelle couleur verte -->
     <div class="marquee-container">
         <div class="marquee-text">
             <span><i class="fas fa-truck"></i> PAIEMENT UNIQUEMENT À LA LIVRAISON </span>
@@ -98,59 +184,58 @@
     {% url 'logout' as logout_url %}
     {% url 'register' as register_url %}
     {% url 'cart' as cart_url %}
-
-    <nav class="navbar-header navbar-expand-lg">
-      <div class="container-fluid">
-        <div class="nav-wrapper">
-        <ul class="navbar-nav">
-          <li><a href="#0924419094"><i class="fas fa-phone"></i> +(225) 07 59 96 24 96</a></li>
-          <li><a href="mailto:support@ecommerce.fr"><i class="fas fa-envelope ml-3"></i>Manou@style.co</a></li>
-          <li><a href="#"><i class="fas fa-map-marker ml-3"></i>Abidjan</a></li>
-        </ul>
-        <ul class="navbar-nav">
-          {% if request.user.is_authenticated %}
-          <li class="nav-item dropdown mr-3 p-0">
-            <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDropdownUserPanel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {{ request.user.get_full_name }}
-            </a>
-            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdownUserPanel">
-              <a class="dropdown-item" href="#">Profil</a>
-              <a class="dropdown-item" href="#">Facturation</a>
-              <a class="dropdown-item" href="#">Historique</a>
-              <a class="dropdown-item" href="#">Bibliothèque</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{{ logout_url }}">Se déconnecter</a>
+    
+    <!-- Barre d'authentification dédiée -->
+    <div class="auth-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    {% if request.user.is_authenticated %}
+                        <div class="user-profile dropdown">
+                            <span class="welcome-text d-none d-md-block">Bienvenue,</span>
+                            <a class="dropdown-toggle" href="#" id="navbarDropdownUserPanel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user-circle user-avatar"></i>
+                                <span>{{ request.user.get_full_name }}</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUserPanel">
+                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Profil</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-file-invoice-dollar mr-2"></i>Facturation</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-history mr-2"></i>Historique</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-book mr-2"></i>Bibliothèque</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ logout_url }}"><i class="fas fa-sign-out-alt mr-2"></i>Se déconnecter</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="auth-buttons">
+                            <a href="{{ login_url }}" class="auth-btn login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Connexion</span>
+                            </a>
+                            <a href="{{ register_url }}" class="auth-btn register-btn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Inscription</span>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-          </li>
-          <li>
-            <a href="{{ logout_url }}"><i class="fas fa-sign-out-alt"></i>Se déconnecter</a>
-          </li>
-          {% else %}
-          <li class="active mr-3">
-            <a href="{{ register_url }}"><i class="fas fa-user-plus"></i>Inscription</a>
-          </li>
-          <li>
-            <a href="{{ login_url }}"><i class="fas fa-sign-in-alt"></i>Connexion</a>
-          </li>
-          {% endif %}
-        </ul>
         </div>
-      </div>
-    </nav>
+    </div>
 
     <nav class="navbar navbar-dark bg-dark mb-4">
       <div class="container-fluid d-flex justify-content-between align-items-center">
         
-    <!-- Logo -->
-    <a class="navbar-brand m-0 p-0 d-none d-md-block" href="{% url 'home' %}">
-      <span class="brand-logo">MANUSTYLE</span>
-    </a>
+        <!-- Logo -->
+        <a class="navbar-brand m-0 p-0 d-none d-md-block" href="{% url 'home' %}">
+          <span class="brand-logo">MANUSTYLE</span>
+        </a>
 
-    <!-- Logo centré pour les téléphones -->
-    <a class="navbar-brand m-0 p-0 d-block d-md-none mx-auto" href="{% url 'home' %}">
-      <span class="brand-logo">MANOUSTYLE</span>
-    </a>
-    
+        <!-- Logo centré pour les téléphones -->
+        <a class="navbar-brand m-0 p-0 d-block d-md-none mx-auto" href="{% url 'home' %}">
+          <span class="brand-logo">MANOUSTYLE</span>
+        </a>
+        
         <!-- Liens de navigation -->
         <ul class="nav flex-nowrap justify-content-center mx-2" style="white-space: nowrap;">
           <li class="nav-item {% if request.path == home_url %}active{% endif %}">
@@ -206,6 +291,26 @@
         }
         .btn-light {
           padding: 0.25rem 0.5rem; /* Réduire le padding du bouton de recherche */
+        }
+        .auth-btn {
+          padding: 5px 10px;
+          font-size: 0.85rem;
+        }
+        .welcome-text {
+          display: none;
+        }
+      }
+      
+      /* Pour les écrans très petits */
+      @media (max-width: 576px) {
+        .form-header {
+          max-width: 140px;
+        }
+        .auth-btn {
+          padding: 4px 8px;
+        }
+        .auth-btn span {
+          font-size: 0.8rem;
         }
       }
     </style>
@@ -340,7 +445,7 @@
                         <li><a href="{% url 'about' %}">À propos</a></li>
                         <li><a href="{% url 'contact' %}">Contact</a></li>
                         <li><a href="{% url 'products' %}">Produits</a></li>
-                        <li><a href="{% url 'cart' %}">Panier</a></li>
+                        <li><a href="{% url 'cart_home' %}">Panier</a></li>
                     </ul>
                 </div>
             </div>

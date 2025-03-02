@@ -1,19 +1,15 @@
 {% extends 'base.html' %}
-{% load cart_filters %}
 {% load static %}
 
 {% block title %}Panier d'achat{% endblock title %}
 
 {% block content %}
 <style>
-    /* Styles généraux */
-    .section {
-        padding: 40px 0;
-    }
+    .section { padding: 40px 0; }
     .cart-header {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column; /* Empile les éléments verticalement */
+        align-items: flex-start; /* Alignement à gauche */
         margin-bottom: 25px;
         position: relative;
     }
@@ -22,14 +18,14 @@
         text-align: left;
         display: inline-block;
         margin: 0px;
-        width: 100%;
-    }
-    .title-line {
+        width: 100%;}
+    
+    
+        .title-line {
         width: 100px;
         height: 4px;
+        
     }
-    
-    /* Style du bouton retour */
     .btn-back {
         display: inline-flex;
         align-items: center;
@@ -43,7 +39,7 @@
         transition: all 0.3s ease;
         border: 1px solid #dee2e6;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-right: 15px;
+        margin-bottom: 15px; /* Espace entre le bouton et le titre */
     }
     .btn-back:hover {
         background-color: #e9ecef;
@@ -51,11 +47,7 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .btn-back i {
-        margin-right: 8px;
-        font-size: 0.9rem;
-    }
-    
+    .btn-back i { margin-right: 8px; font-size: 0.9rem; }
     .table-responsive {
         box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         background: #fff;
@@ -63,10 +55,7 @@
         overflow: hidden;
         margin: 0 auto;
     }
-    .table {
-        margin-bottom: 0;
-        width: 100%;
-    }
+    .table { margin-bottom: 0; width: 100%; }
     .table thead th {
         font-size: 1rem;
         font-weight: 600;
@@ -83,14 +72,8 @@
         text-align: center;
         border-bottom: 1px solid #eee;
     }
-    .table tfoot td {
-        padding: 15px;
-        font-size: 1rem;
-    }
-    .quantity-selector {
-        max-width: 140px;
-        margin: 0 auto;
-    }
+    .table tfoot td { padding: 15px; font-size: 1rem; }
+    .quantity-selector { max-width: 140px; margin: 0 auto; }
     .quantity-input {
         width: 50px;
         font-size: 0.95rem;
@@ -103,9 +86,7 @@
         border-radius: 5px;
         transition: all 0.3s ease;
     }
-    .btn i {
-        margin-right: 5px;
-    }
+    .btn i { margin-right: 5px; }
     .cart-actions {
         display: flex;
         justify-content: center;
@@ -113,8 +94,7 @@
         margin-top: 2rem;
         gap: 20px;
     }
-    .cart-actions .btn-danger,
-    .cart-actions .btn-success {
+    .cart-actions .btn-danger, .cart-actions .btn-success {
         flex: 0 0 200px;
         margin: 0;
         font-weight: 500;
@@ -131,8 +111,6 @@
         color: #6c757d;
         margin-bottom: 20px;
     }
-    
-    /* Liens produits */
     .product-link {
         color: #3498db;
         text-decoration: none;
@@ -143,42 +121,37 @@
         color: #2980b9;
         text-decoration: underline;
     }
-
-    /* Responsive Design pour petits écrans */
+    .cart-summary {
+        align-self: flex-end; /* Place le badge à droite sur la ligne du bas */
+    }
+    .btn.loading::after {
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 5px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     @media (max-width: 767px) {
-        .section {
-            padding: 20px 0;
-        }
+        .section { padding: 20px 0; }
         .cart-header {
             flex-direction: column;
             align-items: flex-start;
         }
-        .btn-back {
-            margin-bottom: 15px;
-            align-self: flex-start;
-        }
-        .title-1 {
-            font-size: 1.5rem;
-        }
-        .title-line {
-            width: 60px;
-            margin-top: 8px;
-        }
-        .table-responsive {
-            border-radius: 8px;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .table {
-            display: block;
-            width: 100%;
-        }
-        .table thead {
-            display: none; /* Masquer les en-têtes sur mobile */
-        }
-        .table tbody, .table tr, .table td {
-            display: block;
-            width: 100%;
-        }
+        .btn-back { margin-bottom: 15px; }
+        .title-1 { font-size: 1.5rem; }
+        .title-line { width: 60px; margin-top: 8px; }
+        .cart-summary { align-self: flex-start; margin-top: 10px; }
+        .table-responsive { border-radius: 8px; box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); }
+        .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
+        .table thead { display: none; }
         .table tbody tr {
             margin-bottom: 15px;
             border-bottom: 1px solid #dee2e6;
@@ -196,42 +169,24 @@
             display: block;
             margin-bottom: 8px;
         }
-        .table tfoot {
-            display: block;
-        }
+        .table tfoot { display: block; }
         .table tfoot tr {
             display: flex;
             justify-content: space-between;
             padding: 15px;
         }
-        .table tfoot td {
-            display: block;
-            text-align: right;
-        }
-        .quantity-selector {
-            justify-content: flex-start;
-            max-width: 100%;
-        }
-        .btn {
-            font-size: 0.85rem;
-            padding: 8px 15px;
-        }
-        .cart-actions {
-            flex-direction: column;
-            gap: 15px;
-        }
-        .cart-actions .btn-danger,
-        .cart-actions .btn-success {
-            width: 100%;
-            flex: none;
-        }
+        .table tfoot td { display: block; text-align: right; }
+        .quantity-selector { justify-content: flex-start; max-width: 100%; }
+        .btn { font-size: 0.85rem; padding: 8px 15px; }
+        .cart-actions { flex-direction: column; gap: 15px; }
+        .cart-actions .btn-danger, .cart-actions .btn-success { width: 100%; flex: none; }
     }
 </style>
 
 <div class="section">
     <div class="container">
         <div class="cart-header">
-            <a href="{% url 'product_list' %}" class="btn-back">
+            <a href="{% url 'products' %}" class="btn-back">
                 <i class="fas fa-arrow-left"></i> Retour
             </a>
             <div>
@@ -246,13 +201,13 @@
         </div>
 
         {% if cart_items %}
-        <!-- Table des produits dans le panier -->
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Nom du produit</th>
+                        <th>Taille</th>
                         <th>Prix unitaire</th>
                         <th>Quantité</th>
                         <th>Total</th>
@@ -261,34 +216,31 @@
                 </thead>
                 <tbody>
                     {% for item in cart_items %}
-                    <tr>
+                    <tr data-item-id="{{ item.id }}">
                         <td data-label="Numero du produit">{{ forloop.counter }}</td>
                         <td data-label="Nom du produit">
                             <a href="{{ item.product.get_absolute_url }}" class="product-link">{{ item.product.title|title }}</a>
                         </td>
+                        <td data-label="Taille">{{ item.size|default:"N/A" }}</td>
                         <td data-label="Prix unitaire">{{ item.product.price }} FCFA</td>
                         <td data-label="Quantité">
-                            <!-- Formulaire pour ajuster la quantité -->
-                            <form method="POST" action="{% url 'update' %}">
+                            <form class="cart-update-form" method="POST" action="{% url 'cart_update' %}">
                                 {% csrf_token %}
                                 <div class="quantity-selector d-flex align-items-center">
-                                    <button type="submit" class="btn btn-outline-secondary decrease" name="action" value="decrease">
-                                        -
-                                    </button>
-                                    <input type="text" readonly class="form-control text-center mx-2 quantity-input" value="{{ item.quantity }}">
-                                    <button type="submit" class="btn btn-outline-secondary increase" name="action" value="increase">
-                                        +
-                                    </button>
+                                    <button type="submit" class="btn btn-outline-secondary decrease" name="action" value="decrease">-</button>
+                                    <input type="text" readonly class="form-control text-center mx-2 quantity-input" value="{{ item.quantity }}" data-quantity="{{ item.quantity }}">
+                                    <button type="submit" class="btn btn-outline-secondary increase" name="action" value="increase">+</button>
                                     <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                    <input type="hidden" name="size" value="{{ item.size|default:'M' }}">
                                 </div>
                             </form>
                         </td>
-                        <td data-label="Total">{{ item.product.price|mul:item.quantity|floatformat:2 }} FCFA</td>
+                        <td data-label="Total" data-total="{{ item.get_total }}">{{ item.get_total|floatformat:2 }} FCFA</td>
                         <td data-label="Action">
-                            <!-- Formulaire pour retirer un article -->
-                            <form method="POST" action="{% url 'update' %}">
+                            <form class="cart-update-form" method="POST" action="{% url 'cart_update' %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                <input type="hidden" name="size" value="{{ item.size|default:'M' }}">
                                 <button type="submit" class="btn btn-outline-danger" name="action" value="remove">
                                     <i class="far fa-trash-alt"></i> Retirer
                                 </button>
@@ -299,30 +251,145 @@
                 </tbody>
                 <tfoot>
                     <tr class="bg-light">
-                        <td colspan="4" class="text-end"><strong>Total :</strong></td>
-                        <td colspan="2" class="text-center"><strong>{{ cart.total|floatformat:2 }} FCFA</strong></td>
+                        <td colspan="5" class="text-end"><strong>Total :</strong></td>
+                        <td colspan="2" class="text-center" id="cart-total"><strong>{{ cart.total|floatformat:2 }} FCFA</strong></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
 
-        <!-- Boutons pour gérer le panier -->
         <div class="cart-actions">
-            <a href="{% url 'clear_cart' %}" class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i> Vider le panier
-            </a>
+            <form method="POST" action="{% url 'clear_cart' %}" class="clear-cart-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Vider le panier
+                </button>
+            </form>
             <a href="{% url 'place_order' %}" class="btn btn-success">
                 <i class="fas fa-shopping-cart"></i> Passer la commande
             </a>
-        </div>
+        </div>   
         {% else %}
         <div class="empty-cart">
             <p>Votre panier est actuellement vide</p>
-            <a href="{% url 'home' %}" class="btn btn-primary">
+            <a href="{% url 'products' %}" class="btn btn-primary">
                 <i class="fas fa-shopping-bag"></i> Continuer vos achats
             </a>
         </div>
         {% endif %}
     </div>
 </div>
+
 {% endblock content %}
+
+{% block js %}
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Gestion AJAX pour les formulaires de mise à jour du panier
+        const forms = document.querySelectorAll('.cart-update-form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const button = form.querySelector('button[type="submit"]');
+                const action = button.getAttribute('name') === 'action' ? button.value : 'update';
+                const formData = new FormData(form);
+                const row = form.closest('tr');
+                const quantityInput = row.querySelector('.quantity-input');
+                const totalCell = row.querySelector('[data-total]');
+
+                button.disabled = true;
+                button.classList.add('loading');
+
+                fetch('{% url "cart_update" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (action === 'remove') {
+                            row.remove();
+                            if (!document.querySelector('tbody tr')) {
+                                location.reload(); // Recharge si le panier est vide
+                            }
+                        } else if (action === 'increase' || action === 'decrease') {
+                            const newQuantity = parseInt(quantityInput.value) + (action === 'increase' ? 1 : -1);
+                            if (newQuantity <= 0) {
+                                row.remove();
+                            } else {
+                                quantityInput.value = newQuantity;
+                                const price = parseFloat(totalCell.getAttribute('data-total')) / parseFloat(quantityInput.getAttribute('data-quantity'));
+                                totalCell.textContent = (price * newQuantity).toFixed(2) + ' FCFA';
+                                totalCell.setAttribute('data-total', price * newQuantity);
+                                quantityInput.setAttribute('data-quantity', newQuantity);
+                            }
+                        }
+                        document.getElementById('cart-total').textContent = data.cart_total.toFixed(2) + ' FCFA';
+                    } else {
+                        alert(data.message || 'Une erreur est survenue.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur réseau est survenue.');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.classList.remove('loading');
+                });
+            });
+        });
+
+        // Gestion AJAX pour vider le panier
+        const clearForm = document.querySelector('.clear-cart-form');
+        if (clearForm) {
+            clearForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const button = clearForm.querySelector('button');
+                
+                button.disabled = true;
+                button.classList.add('loading');
+
+                fetch('{% url "clear_cart" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.classList.remove('loading');
+                });
+            });
+        }
+    });
+</script>
+{% endblock js %}

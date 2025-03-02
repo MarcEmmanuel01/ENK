@@ -16,110 +16,107 @@ class CartManager(models.Manager):
         cart_obj = None
         new_obj = False
 
-        # Si l'utilisateur est authentifié, vérifiez d'abord son panier existant
         if request.user.is_authenticated:
-            try:
-                cart_obj = Cart.objects.get(user=request.user)
-                # Si un panier existe déjà, utilisez-le même si cart_id diffère
-                if cart_id != cart_obj.id:
-                    request.session['cart_id'] = cart_obj.id  # Mettez à jour la session
-            except Cart.DoesNotExist:
-                # Aucun panier pour cet utilisateur, créez-en un
-                cart_obj = self.new(user=request.user)
-                new_obj = True
+            cart_obj, created = self.get_or_create(user=request.user)
+            if created or cart_id != cart_obj.id:
                 request.session['cart_id'] = cart_obj.id
         else:
-            # Utilisateur non authentifié : récupérez ou créez un panier anonyme
-            qs = self.get_queryset().filter(id=cart_id)
+            qs = self.filter(id=cart_id)
             if qs.exists():
                 cart_obj = qs.first()
             else:
-                cart_obj = self.new(user=None)
+                cart_obj = self.create(user=None)
                 new_obj = True
                 request.session['cart_id'] = cart_obj.id
 
         return cart_obj, new_obj
 
-    def new(self, user=None):
-        """
-        Crée un nouveau panier pour un utilisateur.
-        """
-        user_obj = user if user and user.is_authenticated else None
-        return self.model.objects.create(user=user_obj)
-
 
 class Cart(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(
+        User,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
-        related_name="cart"  # Nom unique pour éviter les conflits
+        on_delete=models.SET_NULL,
+        related_name="carts"
     )
     products = models.ManyToManyField(
         Product,
-        through="CartItem",  # Utilise le modèle intermédiaire CartItem
+        through="CartItem",
         blank=True,
     )
-    subtotal = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
-    total = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
+    subtotal = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
 
     objects = CartManager()
 
     def __str__(self):
         return f"Cart ID: {self.id}"
 
+    def update_totals(self):
+        """
+        Met à jour le sous-total et total du panier.
+        """
+        self.subtotal = sum(item.get_total_item_price() for item in self.cart_items.all())
+        self.total = self.subtotal  # Ajout d'éventuelles taxes ici si nécessaire
+        self.save()
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
-        related_name="cart_items"  # Nom unique pour éviter les conflits
+        related_name="cart_items"
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name="cart_items_in_cart"  # Nom unique pour éviter les conflits
+        related_name="cart_items_in_cart"
     )
     quantity = models.PositiveIntegerField(default=1)
+    size = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return f"{self.quantity} x {self.product.title}"
 
     def get_total_item_price(self):
-        return self.product.price * self.quantity
+        """Calcule le prix total de cet article."""
+        return Decimal(self.product.price) * Decimal(self.quantity)
+
+    # Alias pour une utilisation claire dans le template
+    get_total = get_total_item_price
 
 
-# Signal pour mettre à jour le sous-total lorsque les produits changent
+# Signal pour mettre à jour le sous-total du panier après modification d'un `CartItem`
 def post_save_cart_item_receiver(sender, instance, **kwargs):
     """
-    Met à jour le sous-total du panier après avoir sauvegardé un CartItem.
+    Met à jour le sous-total du panier après ajout ou modification d'un article.
     """
-    cart = instance.cart
-    cart.subtotal = sum(item.get_total_item_price() for item in cart.cart_items.all())
-    cart.save()
+    instance.cart.update_totals()
 
 
 post_save.connect(post_save_cart_item_receiver, sender=CartItem)
 
 
-# Signal pour calculer le total du panier avant sauvegarde (sans taxe)
+# Signal pour éviter les erreurs d'accès aux `cart_items` avant que `Cart` ait une clé primaire
 def pre_save_cart_receiver(sender, instance, **kwargs):
     """
-    Calcule le total du panier avant de le sauvegarder, sans appliquer de taxe.
+    Assure que le total est mis à jour avant sauvegarde.
     """
-    instance.total = instance.subtotal  # Total = Sous-total (pas de taxe)
+    if instance.pk:  # Vérifie que l'instance a bien une clé primaire
+        instance.total = instance.subtotal  # Pas de taxe appliquée pour l'instant
 
 
 pre_save.connect(pre_save_cart_receiver, sender=Cart)
 
 
-# Ajout des modèles Order et OrderItem
+# Modèles pour la gestion des commandes
 class Order(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         null=True,
         blank=True

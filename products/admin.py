@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Produit  # Ajout du modèle Produit
+from .models import Product # Ajout du modèle Produit
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -28,4 +28,3 @@ class ProduitAdmin(admin.ModelAdmin):
 
 # Enregistrement des modèles dans l'interface d'administration
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Produit, ProduitAdmin)
