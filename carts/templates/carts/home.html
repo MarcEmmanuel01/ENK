@@ -18,13 +18,11 @@
         text-align: left;
         display: inline-block;
         margin: 0px;
-        width: 100%;}
-    
-    
-        .title-line {
+        width: 100%;
+    }
+    .title-line {
         width: 100px;
         height: 4px;
-        
     }
     .btn-back {
         display: inline-flex;
@@ -334,7 +332,7 @@
                                 location.reload(); // Recharge si le panier est vide
                             }
                         } else if (action === 'increase' || action === 'decrease') {
-                            const newQuantity = parseInt(quantityInput.value) + (action === 'increase' ? 1 : -1);
+                            const newQuantity = data.item_quantity;
                             if (newQuantity <= 0) {
                                 row.remove();
                             } else {
@@ -345,7 +343,13 @@
                                 quantityInput.setAttribute('data-quantity', newQuantity);
                             }
                         }
+                        // Mettre à jour le total du panier
                         document.getElementById('cart-total').textContent = data.cart_total.toFixed(2) + ' FCFA';
+                        // Mettre à jour le compteur global du panier
+                        const cartCountElement = document.querySelector('.cart-count');
+                        if (cartCountElement) {
+                            cartCountElement.textContent = data.cart_count;
+                        }
                     } else {
                         alert(data.message || 'Une erreur est survenue.');
                     }
@@ -381,6 +385,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        document.querySelector('.cart-count').textContent = '0'; // Réinitialiser le compteur global
                         location.reload();
                     }
                 })

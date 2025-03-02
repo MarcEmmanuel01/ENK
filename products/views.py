@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -67,7 +67,6 @@ def manage_products(request):
 
 # ✅ Vue AJAX pour ajouter ou retirer un produit du panier
 @require_POST
-@login_required
 def update_cart(request):
     product_id = request.POST.get('product_id')
     

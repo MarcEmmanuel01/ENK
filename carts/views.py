@@ -6,7 +6,6 @@ from .models import Cart, CartItem, Order, OrderItem
 from django.utils.crypto import get_random_string
 from django.views.decorators.http import require_POST
 
-
 # ✅ Vue principale du panier
 def cart_home(request):
     cart, _ = Cart.objects.new_or_get(request)
@@ -57,9 +56,11 @@ def cart_update(request):
 
     if action == "increase":
         cart_item.quantity += 1
+        cart_item.save()
     elif action == "decrease":
         if cart_item.quantity > 1:
             cart_item.quantity -= 1
+            cart_item.save()
         else:
             cart_item.delete()
     elif action == "remove":
@@ -68,7 +69,13 @@ def cart_update(request):
     cart.update_totals()
     request.session['cart_items'] = cart.cart_items.count()
 
-    return JsonResponse({'success': True, 'cart_total': cart.total})
+    # Renvoie la nouvelle quantité de l'article et le total du panier
+    return JsonResponse({
+        'success': True,
+        'cart_total': float(cart.total),
+        'item_quantity': cart_item.quantity if cart_item.exists() else 0,
+        'cart_count': cart.products.count()
+    })
 
 
 # ✅ Vider le panier

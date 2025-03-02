@@ -331,13 +331,13 @@
         text-align: left;
         display: inline-block;
         margin: 0px;
-        width: 100%;}
+        width: 100%;
+    }
     
-    
-        .title-line {
+    .title-line {
         width: 100px;
         height: 4px;
-        }
+    }
 </style>
 
 <div class="container py-4">
@@ -527,8 +527,11 @@
                             button.setAttribute('data-action', 'remove');
                             button.innerHTML = '<i class="fas fa-shopping-cart"></i> Retirer du panier';
                         }
-                        // Optionnel : Mettre à jour un compteur ou total
-                        // document.querySelector('#cart-count').textContent = data.cart_count;
+                        // Mettre à jour le compteur du panier dans base.html
+                        const cartCountElement = document.querySelector('.cart-count');
+                        if (cartCountElement) {
+                            cartCountElement.textContent = data.cart_count;
+                        }
                     } else {
                         alert(data.message || 'Une erreur est survenue.');
                     }
