@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Gérer les Produits{% endblock title %}
+{% block title %}Gérer les Produits | eCommerce{% endblock title %}
 
 {% block content %}
 <div class="container">
@@ -39,11 +39,31 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-product").forEach(button => {
+    console.log("Script chargé avec succès.");
+    const buttons = document.querySelectorAll(".delete-product");
+    if (buttons.length === 0) {
+        console.warn("Aucun bouton .delete-product trouvé dans le DOM.");
+        return;
+    }
+    
+    buttons.forEach(button => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
+            console.log("Bouton Supprimer cliqué pour productId:", this.dataset.productId);
+            
             let productId = this.dataset.productId;
-            let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+            let csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            
+            if (!productId) {
+                console.error("productId manquant dans dataset.");
+                alert("Erreur : ID du produit manquant.");
+                return;
+            }
+            if (!csrfToken) {
+                console.error("Token CSRF manquant.");
+                alert("Erreur : Token CSRF non trouvé. Vérifie base.html.");
+                return;
+            }
             
             if (confirm("Voulez-vous vraiment supprimer ce produit ?")) {
                 fetch("{% url 'manage_products' %}", {
@@ -53,18 +73,27 @@ document.addEventListener("DOMContentLoaded", function () {
                         "X-Requested-With": "XMLHttpRequest",
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                    body: `product_id=${productId}`
+                    body: `product_id=${encodeURIComponent(productId)}`
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Réponse serveur:', data);
                     if (data.success) {
                         alert("Produit supprimé avec succès !");
-                        document.getElementById(`product-row-${productId}`).remove(); // Suppression du produit sans rechargement
+                        document.getElementById(`product-row-${productId}`).remove();
                     } else {
-                        alert("Erreur lors de la suppression !");
+                        alert("Erreur lors de la suppression : " + (data.message || "Erreur inconnue"));
                     }
                 })
-                .catch(error => console.error("Erreur:", error));
+                .catch(error => {
+                    console.error("Erreur:", error);
+                    alert("Une erreur est survenue lors de la suppression : " + error.message);
+                });
             }
         });
     });

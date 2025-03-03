@@ -1,17 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Liste des Produits | eCommerce{% endblock title %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <style>
-        /* ✅ Suppression des marges en haut et en bas */
+    /* ✅ Suppression des marges en haut et en bas */
     .section {
         margin: 0;
         padding: 0;
     }
     .hot-deal {
         margin: 0 auto;
-        padding: 20px 0; 
+        padding: 20px 0;
+        display: flex; /* Utilisation de flexbox pour aligner les éléments */
+        justify-content: center; /* Centre les éléments horizontalement */
+        align-items: center; /* Centre verticalement */
+        flex-wrap: wrap; /* Permet un retour à la ligne si nécessaire */
+        gap: 10px; /* Réduit l’écart entre les éléments */
+        max-width: 1200px; /* Limite la largeur totale pour un meilleur centrage */
     }
     .card {
         position: relative;
@@ -20,22 +26,50 @@
     .card:hover {
         transform: translateY(-15px);
         box-shadow: 0px 2px 45px 2px rgba(0, 0, 0, 0.3);
-        transition: .5s;
+        transition: 0.5s;
+    }
+    /* ✅ Ajustement proportionnel et centré des images */
+    .deal-image {
+        width: 30%; /* Proportion uniforme pour les deux images */
+        max-width: 300px; /* Limite maximale pour éviter des tailles excessives */
+        height: auto; /* Maintient le ratio d’aspect */
+        object-fit: cover; /* Assure un bon cadrage sans déformation */
+    }
+    .text-center {
+        flex: 1; /* Permet au texte de s’adapter à l’espace restant */
+        min-width: 200px; /* Largeur minimale pour éviter un écrasement */
+        text-align: center; /* Centre le texte */
+    }
+    .btn-danger a {
+        color: white !important; /* Assure que le lien reste blanc */
+        text-decoration: none !important; /* Supprime le soulignement */
+    }
+    @media (max-width: 768px) {
+        .deal-image {
+            width: 40%; /* Réduit la taille sur mobile */
+            max-width: 200px;
+        }
+        .hot-deal {
+            flex-direction: column; /* Passe en colonne sur petits écrans */
+            gap: 15px; /* Augmente légèrement l’écart sur mobile */
+        }
+        .text-center {
+            min-width: 100%; /* Prend toute la largeur sur mobile */
+        }
     }
 </style>
 
-
 <div class="section">
     <div class="hot-deal">
-        <img src="{% static 'img/product-1.png' %}" alt="" width="350px">
+        <img src="{% static 'img/66.png' %}" alt="Offre gauche" class="deal-image">
         <div class="text-center">
-            <h4>OFFRE DE LA SEMAINE</h4><p class="lead">Nouvelle collection jusqu'à 50% de réduction</p><br>
+            <h4>OFFRE DE LA SEMAINE</h4>
+            <p class="lead">Nouvelle collection jusqu'à 50% de réduction</p><br>
             <button class="btn btn-danger mt-4">
                 <a href="{% url 'products' %}" class="text-white text-decoration-none">Voir nos produits</a>
             </button>
-            
         </div>
-        <img src="{% static 'img/product-2.png' %}" alt="" width="350px">
+        <img src="{% static 'img/77.png' %}" alt="Offre droite" class="deal-image">
     </div>
 </div>
 {% endblock content %}

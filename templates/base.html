@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}eCommerce{% endblock title %}</title>
     
+    <!-- Ajout du token CSRF pour les requêtes AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
     <link rel="stylesheet" type="text/css" href="{% static 'css/font-face.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
@@ -113,7 +116,7 @@
             color: #fff;
             background-color: #6c757d;
             border: 1px solid #6c757d;
-            margin-right: auto; /* Pousse vers la gauche */
+            margin-left: auto; /* Pousse vers la gauche */
         }
         
         .login-btn:hover {
@@ -126,7 +129,7 @@
             color: #fff;
             background-color: #007bff;
             border: 1px solid #007bff;
-            margin-left: auto; /* Pousse vers la droite */
+            margin-right: auto; /* Pousse vers la droite */
         }
         
         .register-btn:hover {
@@ -198,23 +201,18 @@
                                 <span>{{ request.user.get_full_name }}</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUserPanel">
-                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Profil</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-file-invoice-dollar mr-2"></i>Facturation</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-history mr-2"></i>Historique</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-book mr-2"></i>Bibliothèque</a>
-                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ logout_url }}"><i class="fas fa-sign-out-alt mr-2"></i>Se déconnecter</a>
                             </div>
                         </div>
                     {% else %}
                         <div class="auth-buttons">
-                            <a href="{{ login_url }}" class="auth-btn login-btn">
-                                <i class="fas fa-sign-in-alt"></i>
-                                <span>Connexion</span>
-                            </a>
                             <a href="{{ register_url }}" class="auth-btn register-btn">
-                                <i class="fas fa-user-plus"></i>
+                                <i class="fas fa-sign-in-alt"></i>
                                 <span>Inscription</span>
+                            </a>
+                            <a href="{{ login_url }}" class="auth-btn login-btn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Connexion</span>
                             </a>
                         </div>
                     {% endif %}
@@ -228,12 +226,12 @@
         
         <!-- Logo -->
         <a class="navbar-brand m-0 p-0 d-none d-md-block" href="{% url 'home' %}">
-          <span class="brand-logo">MANOUSTYLE</span>
+          <span class="brand-logo">MEK' STYLE</span>
         </a>
 
         <!-- Logo centré pour les téléphones -->
         <a class="navbar-brand m-0 p-0 d-block d-md-none mx-auto" href="{% url 'home' %}">
-          <span class="brand-logo">MANOUSTYLE</span>
+          <span class="brand-logo">MEK' STYLE</span>
         </a>
         
         <!-- Liens de navigation -->
@@ -267,7 +265,7 @@
             <i class="fas fa-shopping-cart cart-icon" style="font-size: 1.5rem;"></i>
             <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {% if cart %}
-                {{ cart.products.count }}
+                {{ cart.cart_items.count }} <!-- Utiliser cart_items.count pour CartItem -->
               {% else %}
                 0
               {% endif %}
@@ -439,7 +437,7 @@
                             <li class="mb-3">Nous sommes une boutique en ligne spécialisée dans les vêtements et accessoires de qualité. Notre objectif est de fournir les meilleures tendances à des prix compétitifs.</li>
                             <li><i class="fas fa-map-marker"></i>Abidjan, Cocody ABATTA</li>
                             <li><i class="fas fa-phone"></i>+225 07 59 96 24 96</li>
-                            <li><i class="fas fa-envelope"></i>Manou@style.co</li>
+                            <li><i class="fas fa-envelope"></i>Mek@style.com</li>
                         </ul>
                     </div>
                     <div class="col-md-2 mr-3">

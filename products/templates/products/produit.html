@@ -405,7 +405,7 @@
                             <button type="button" class="qty-btn increase" data-id="{{ obj.id }}">+</button>
                         </div>
                         
-                        {% if obj in cart.products.all %}
+                        {% if obj.id in cart_products %}
                         <button type="submit" class="cart-btn remove-btn" data-product-id="{{ obj.id }}" data-action="remove">
                             <i class="fas fa-shopping-cart"></i> Retirer du panier
                         </button>
@@ -497,9 +497,11 @@
                 e.preventDefault();
                 
                 const button = form.querySelector('.cart-btn');
-                const isInCart = button.classList.contains('remove-btn');
                 const action = button.getAttribute('data-action');
                 const formData = new FormData(form);
+
+                // Ajouter explicitement l’action dans FormData
+                formData.append('action', action);
 
                 console.log('Action:', action);
                 console.log('FormData:', Array.from(formData.entries()));
@@ -519,12 +521,12 @@
                 .then(data => {
                     console.log('Response:', data);
                     if (data.success) {
-                        if (isInCart) {
+                        if (action === 'remove') {
                             button.classList.remove('remove-btn');
                             button.classList.add('add-btn');
                             button.setAttribute('data-action', 'add');
                             button.innerHTML = '<i class="fas fa-shopping-cart"></i> Ajouter au panier';
-                        } else {
+                        } else if (action === 'add') {
                             button.classList.remove('add-btn');
                             button.classList.add('remove-btn');
                             button.setAttribute('data-action', 'remove');
@@ -534,6 +536,7 @@
                         if (cartCountElement) {
                             cartCountElement.textContent = data.cart_count;
                         }
+                        // Supprimer l’alerte pour les succès
                     } else {
                         alert(data.message || 'Une erreur est survenue.');
                     }

@@ -16,7 +16,7 @@ def cart_home(request):
 def add_to_cart(request):
     product_id = request.POST.get("product_id")
     quantity = int(request.POST.get("quantity", 1))
-    size = request.POST.get("size") or "M"
+    size = request.POST.get("size", "M")
 
     if quantity <= 0:
         messages.error(request, "Veuillez sélectionner une quantité valide.")
@@ -41,9 +41,9 @@ def add_to_cart(request):
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'success': True, 'quantity': cart_item.quantity})
-
-    messages.success(request, f"{quantity} x {product.title} ajouté(s) au panier.")
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        messages.success(request, f"{quantity} x {product.title} ajouté(s) au panier.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @require_POST
 def cart_update(request):
@@ -115,9 +115,9 @@ def clear_cart(request):
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'success': True})
-
-    messages.success(request, "Le panier a été vidé.")
-    return redirect("cart_home")
+    else:
+        messages.success(request, "Le panier a été vidé.")
+        return redirect("cart_home")
 
 def items_count(request):
     cart, _ = Cart.objects.new_or_get(request)
