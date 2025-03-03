@@ -10,13 +10,20 @@
     <!-- Ajout du token CSRF pour les requêtes AJAX -->
     <meta name="csrf-token" content="{{ csrf_token }}">
     
-    <link rel="stylesheet" type="text/css" href="{% static 'css/font-face.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/green.css' %}">
-    <!-- Ajout d'une police élégante pour le logo -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <!-- Style pour le logo, bannière défilante et panier -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-face.css' %}" defer>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}" defer>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" defer>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/green.css' %}" defer>
+    
+    <!-- Police élégante pour le logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet" defer>
+    
+    <!-- En-têtes de sécurité supplémentaires -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <!-- Style pour le logo, bannière défilante, panier, et autres -->
     <style>
         .brand-logo {
             font-family: 'Playfair Display', serif;
@@ -28,7 +35,7 @@
         
         /* Style pour la bannière défilante - Couleur modifiée */
         .marquee-container {
-            background-color: #27ae60; /* Changement de couleur (vert) */
+            background-color: #27ae60;
             color: #ffffff;
             padding: 8px 0;
             overflow: hidden;
@@ -39,20 +46,20 @@
         .marquee-text {
             display: inline-block;
             white-space: nowrap;
-            animation: marquee 20s linear infinite;
+            animation: marquee 10s linear infinite; /* Ajusté à 10 secondes pour un défilement fluide et lisible */
             font-weight: bold;
             letter-spacing: 1px;
         }
         
         @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+            0% { transform: translateX(0); } /* Début à la position initiale */
+            100% { transform: translateX(-100%); } /* Fin à -100% pour un défilement complet */
         }
         
         /* Icône pour le texte défilant */
         .marquee-text i {
             color: #ffffff;
-            margin-right: 10px;
+            margin-right: 5px; /* Garde une marge réduite pour minimiser les espaces, mais ajustable */
         }
         
         /* Style pour le panier */
@@ -92,9 +99,9 @@
         
         .auth-buttons {
             display: flex;
-            justify-content: space-between; /* Modifié: espace entre les boutons */
+            justify-content: flex-end; /* Aligner à droite pour une meilleure lisibilité */
             align-items: center;
-            width: 100%; /* Pour occuper toute la largeur */
+            width: 100%;
         }
         
         .auth-btn {
@@ -106,6 +113,7 @@
             transition: all 0.2s ease-in-out;
             display: flex;
             align-items: center;
+            margin-left: 10px; /* Espacement entre les boutons */
         }
         
         .auth-btn i {
@@ -116,7 +124,6 @@
             color: #fff;
             background-color: #6c757d;
             border: 1px solid #6c757d;
-            margin-left: auto; /* Pousse vers la gauche */
         }
         
         .login-btn:hover {
@@ -129,7 +136,6 @@
             color: #fff;
             background-color: #007bff;
             border: 1px solid #007bff;
-            margin-right: auto; /* Pousse vers la droite */
         }
         
         .register-btn:hover {
@@ -142,8 +148,8 @@
         .user-profile {
             display: flex;
             align-items: center;
+            justify-content: flex-end; /* Aligner à droite */
             width: 100%;
-            justify-content: flex-end;
         }
         
         .user-profile .dropdown-toggle {
@@ -167,6 +173,148 @@
             color: #6c757d;
             margin-right: 10px;
             font-size: 0.9rem;
+        }
+        
+        /* Styles pour les petits écrans */
+        @media (max-width: 768px) {
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            .form-header {
+                max-width: 200px;
+            }
+            .form-control {
+                padding: 0.25rem 0.5rem;
+            }
+            .btn-light {
+                padding: 0.25rem 0.5rem;
+            }
+            .auth-btn {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+            .welcome-text {
+                display: none;
+            }
+            .auth-buttons {
+                justify-content: center; /* Centrer les boutons sur mobile */
+            }
+            .auth-btn {
+                margin-left: 5px; /* Réduire l’espacement sur mobile */
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .form-header {
+                max-width: 140px;
+            }
+            .auth-btn {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+        
+        /* Section Rejoignez-nous */
+        .join-section {
+            border-top: 2px solid #ddd;
+            padding: 20px 0;
+            background: #f8f9fa;
+        }
+        .join-section h2 {
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .join-section p {
+            font-size: 1rem;
+            color: #555;
+            max-width: 500px;
+            margin-bottom: 10px;
+        }
+        .join-section .btn {
+            font-size: 1rem;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        #top-footer {
+            padding: 30px 0;
+        }
+        #top-footer h5 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        #top-footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        #top-footer li {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        #top-footer li i {
+            margin-right: 8px;
+        }
+        #bottom-footer {
+            padding: 15px 0;
+            background: #e9ecef;
+        }
+        #bottom-footer .copyright {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        /* Responsive pour le footer */
+        @media (max-width: 767px) {
+            .join-section {
+                padding: 15px 0;
+            }
+            .join-section h2 {
+                font-size: 1.25rem;
+            }
+            .join-section p {
+                font-size: 0.9rem;
+                max-width: 100%;
+                padding: 0 10px;
+            }
+            .join-section .btn {
+                font-size: 0.9rem;
+                padding: 6px 15px;
+            }
+            #top-footer {
+                padding: 20px 0;
+            }
+            #top-footer .col-md-4,
+            #top-footer .col-md-2 {
+                margin-bottom: 20px;
+            }
+            #top-footer h5 {
+                font-size: 1rem;
+            }
+            #top-footer li {
+                font-size: 0.85rem;
+            }
+            #bottom-footer {
+                padding: 10px 0;
+            }
+            #bottom-footer .copyright {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -265,7 +413,7 @@
             <i class="fas fa-shopping-cart cart-icon" style="font-size: 1.5rem;"></i>
             <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {% if cart %}
-                {{ cart.cart_items.count }} <!-- Utiliser cart_items.count pour CartItem -->
+                {{ cart.cart_items.count }}
               {% else %}
                 0
               {% endif %}
@@ -279,20 +427,20 @@
     <style>
       @media (max-width: 768px) {
         .nav-link {
-          font-size: 0.9rem; /* Réduire la taille de la police */
-          padding: 0.5rem 0.75rem; /* Réduire le padding */
+          font-size: 0.9rem;
+          padding: 0.5rem 0.75rem;
         }
         .navbar-brand {
-          font-size: 1.2rem; /* Réduire la taille du logo */
+          font-size: 1.2rem;
         }
         .form-header {
-          max-width: 200px; /* Réduire la largeur de la barre de recherche */
+          max-width: 200px;
         }
         .form-control {
-          padding: 0.25rem 0.5rem; /* Réduire le padding du champ de recherche */
+          padding: 0.25rem 0.5rem;
         }
         .btn-light {
-          padding: 0.25rem 0.5rem; /* Réduire le padding du bouton de recherche */
+          padding: 0.25rem 0.5rem;
         }
         .auth-btn {
           padding: 5px 10px;
@@ -301,116 +449,122 @@
         .welcome-text {
           display: none;
         }
+        .auth-buttons {
+          justify-content: center;
+        }
+        .auth-btn {
+          margin-left: 5px;
+        }
       }
       
-      /* Pour les écrans très petits */
       @media (max-width: 576px) {
         .form-header {
           max-width: 140px;
         }
         .auth-btn {
           padding: 4px 8px;
-        }
-        .auth-btn span {
           font-size: 0.8rem;
         }
+        .navbar-brand {
+          font-size: 1rem;
+        }
+        .nav-link {
+          font-size: 0.8rem;
+          padding: 0.4rem 0.6rem;
+        }
       }
-    </style>
+      
+      /* Section Rejoignez-nous */
+      .join-section {
+          border-top: 2px solid #ddd;
+          padding: 20px 0;
+          background: #f8f9fa;
+      }
+      .join-section h2 {
+          font-size: 1.5rem;
+          color: #333;
+          font-weight: bold;
+          margin-bottom: 10px;
+      }
+      .join-section p {
+          font-size: 1rem;
+          color: #555;
+          max-width: 500px;
+          margin-bottom: 10px;
+      }
+      .join-section .btn {
+          font-size: 1rem;
+          padding: 8px 20px;
+          border-radius: 30px;
+          font-weight: bold;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
 
-    {% block content %}{% endblock content %}
+      /* Footer */
+      #top-footer {
+          padding: 30px 0;
+      }
+      #top-footer h5 {
+          font-size: 1.1rem;
+          margin-bottom: 10px;
+      }
+      #top-footer ul {
+          list-style: none;
+          padding: 0;
+      }
+      #top-footer li {
+          font-size: 0.9rem;
+          margin-bottom: 8px;
+      }
+      #top-footer li i {
+          margin-right: 8px;
+      }
+      #bottom-footer {
+          padding: 15px 0;
+          background: #e9ecef;
+      }
+      #bottom-footer .copyright {
+          font-size: 0.85rem;
+          color: #555;
+      }
 
-    <style>
-        /* Section Rejoignez-nous */
-        .join-section {
-            border-top: 2px solid #ddd;
-            padding: 20px 0; /* Réduit de py-4 (32px) à 20px */
-            background: #f8f9fa;
-        }
-        .join-section h2 {
-            font-size: 1.5rem; /* Réduit de 2rem à 1.5rem */
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 10px; /* Réduit de 15px à 10px */
-        }
-        .join-section p {
-            font-size: 1rem; /* Réduit de 1.2rem à 1rem */
-            color: #555;
-            max-width: 500px;
-            margin-bottom: 10px; /* Réduit de 15px à 10px */
-        }
-        .join-section .btn {
-            font-size: 1rem; /* Réduit de 1.3rem à 1rem */
-            padding: 8px 20px; /* Réduit de px-4 py-2 à 8px 20px */
-            border-radius: 30px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Footer */
-        #top-footer {
-            padding: 30px 0; /* Réduit de py-5 (40px) à 30px */
-        }
-        #top-footer h5 {
-            font-size: 1.1rem; /* Réduit pour compacité */
-            margin-bottom: 10px;
-        }
-        #top-footer ul {
-            list-style: none;
-            padding: 0;
-        }
-        #top-footer li {
-            font-size: 0.9rem; /* Réduit pour compacité */
-            margin-bottom: 8px; /* Réduit de 10px à 8px */
-        }
-        #top-footer li i {
-            margin-right: 8px;
-        }
-        #bottom-footer {
-            padding: 15px 0; /* Réduit de py-5 (40px) à 15px */
-            background: #e9ecef;
-        }
-        #bottom-footer .copyright {
-            font-size: 0.85rem; /* Réduit pour compacité */
-            color: #555;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 767px) {
-            .join-section {
-                padding: 15px 0; /* Encore plus compact sur mobile */
-            }
-            .join-section h2 {
-                font-size: 1.25rem; /* Réduit sur mobile */
-            }
-            .join-section p {
-                font-size: 0.9rem;
-                max-width: 100%;
-                padding: 0 10px;
-            }
-            .join-section .btn {
-                font-size: 0.9rem;
-                padding: 6px 15px;
-            }
-            #top-footer {
-                padding: 20px 0;
-            }
-            #top-footer .col-md-4,
-            #top-footer .col-md-2 {
-                margin-bottom: 20px; /* Espacement entre sections empilées */
-            }
-            #top-footer h5 {
-                font-size: 1rem;
-            }
-            #top-footer li {
-                font-size: 0.85rem;
-            }
-            #bottom-footer {
-                padding: 10px 0;
-            }
-            #bottom-footer .copyright {
-                font-size: 0.8rem;
-            }
-        }
+      /* Responsive pour le footer */
+      @media (max-width: 767px) {
+          .join-section {
+              padding: 15px 0;
+          }
+          .join-section h2 {
+              font-size: 1.25rem;
+          }
+          .join-section p {
+              font-size: 0.9rem;
+              max-width: 100%;
+              padding: 0 10px;
+          }
+          .join-section .btn {
+              font-size: 0.9rem;
+              padding: 6px 15px;
+          }
+          #top-footer {
+              padding: 20px 0;
+          }
+          #top-footer .col-md-4,
+          #top-footer .col-md-2 {
+              margin-bottom: 20px;
+          }
+          #top-footer h5 {
+              font-size: 1rem;
+          }
+          #top-footer li {
+              font-size: 0.85rem;
+          }
+          #bottom-footer {
+              padding: 10px 0;
+          }
+          #bottom-footer .copyright {
+              font-size: 0.8rem;
+          }
+      }
     </style>
 
     <section class="join-section text-center">
@@ -462,9 +616,10 @@
         </section>
     </footer>
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <!-- Chargement asynchrone des scripts pour améliorer la performance -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}" defer></script>
+    <script src="{% static 'js/js/bootstrap.bundle.min.js' %}" defer></script>
+    <script src="{% static 'js/main.js' %}" defer></script>
     {% block js %}{% endblock js %}
 </body>
 </html>
