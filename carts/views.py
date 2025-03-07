@@ -42,18 +42,14 @@ def add_to_cart(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'success': True, 'quantity': cart_item.quantity})
     else:
-        messages.success(request, f"{quantity} x {product.title} ajouté(s) au panier.")
+        messages.success(request, f"{quantity} x {product.title} (Taille: {size}) ajouté(s) au panier.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @require_POST
 def cart_update(request):
-    print("Entrée dans cart_update")
     product_id = request.POST.get("product_id")
     size = request.POST.get("size", "M")
     action = request.POST.get("action")
-
-    print(f"POST data: {request.POST}")
-    print(f"product_id: {product_id}, size: {size}, action: {action}")
 
     if not product_id or action not in ['increase', 'decrease', 'remove']:
         return JsonResponse({
@@ -67,16 +63,6 @@ def cart_update(request):
         product__id=product_id,
         size=size
     ).first()
-
-    if not cart_item and size == "M":
-        cart_item = CartItem.objects.filter(
-            cart=cart,
-            product__id=product_id,
-            size=None
-        ).first()
-        if cart_item:
-            cart_item.size = "M"
-            cart_item.save()
 
     if not cart_item:
         return JsonResponse({'success': False, 'message': "Article non trouvé dans le panier"}, status=404)
@@ -135,15 +121,6 @@ def remove_from_cart(request):
         product_id=product_id,
         size=size
     ).first()
-    if not cart_item and size == "M":
-        cart_item = CartItem.objects.filter(
-            cart=cart,
-            product_id=product_id,
-            size=None
-        ).first()
-        if cart_item:
-            cart_item.size = "M"
-            cart_item.save()
 
     if cart_item:
         cart_item.delete()
@@ -181,7 +158,7 @@ def place_order(request):
             district=district,
             address=address,
             notes=notes,
-            total_price=cart.total + 1000
+            total_price=cart.total + 1000  # Frais de livraison fixes
         )
 
         for item in cart_items:
@@ -190,7 +167,7 @@ def place_order(request):
                 product=item.product,
                 quantity=item.quantity,
                 price=item.get_total_item_price(),
-                size=item.size or "M"
+                size=item.size  # La taille est déjà nullable dans le modèle
             )
 
         cart_items.delete()

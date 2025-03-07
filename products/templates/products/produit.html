@@ -191,18 +191,11 @@
         background: var(--success);
         color: white;
     }
-    .cart-btn.remove-btn {
-        background: var(--danger);
-        color: white;
-    }
     .cart-btn:hover {
         transform: translateY(-2px);
     }
     .cart-btn.add-btn:hover {
         background: #27ae60;
-    }
-    .cart-btn.remove-btn:hover {
-        background: #c0392b;
     }
     .cart-btn i {
         margin-right: 5px;
@@ -389,6 +382,7 @@
                     <form class="form-product-ajax" method="POST" action="{% url 'update_cart' %}" data-endpoint="{% url 'update_cart' %}">
                         {% csrf_token %}
                         <input type="hidden" name="product_id" value="{{ obj.id }}">
+                        <input type="hidden" name="action" value="add">
                         
                         <div class="size-selector">
                             <select name="size" class="size-select">
@@ -405,15 +399,9 @@
                             <button type="button" class="qty-btn increase" data-id="{{ obj.id }}">+</button>
                         </div>
                         
-                        {% if obj.id in cart_products %}
-                        <button type="submit" class="cart-btn remove-btn" data-product-id="{{ obj.id }}" data-action="remove">
-                            <i class="fas fa-shopping-cart"></i> Retirer du panier
-                        </button>
-                        {% else %}
                         <button type="submit" class="cart-btn add-btn" data-product-id="{{ obj.id }}" data-action="add">
                             <i class="fas fa-shopping-cart"></i> Ajouter au panier
                         </button>
-                        {% endif %}
                         
                         <a href="{% url 'cart_home' %}" class="view-cart">
                             <i class="fas fa-shopping-cart"></i> Voir mon panier
@@ -429,12 +417,11 @@
         <h2 class="promo-title">OFFRE SPÉCIALE DE LA SEMAINE</h2>
         <p class="promo-desc">Profitez de notre nouvelle collection avec jusqu'à 50% de réduction</p>
         <div class="tag-wrap">
-            <span class="cat-tag">Vêtements</span>
-            <span class="cat-tag">Chaussures</span>
-            <span class="cat-tag">Montres</span>
-            <span class="cat-tag">Accessoires</span>
+            <span class="cat-tag">Cardigans hommes</span>
+            <span class="cat-tag">cardigans femmes</span>
+            <span class="cat-tag">Cardiagn enfants</span>
         </div>
-        <button class="discover-btn">Découvrir maintenant</button>
+        <button class="discover-btn" onclick="window.location.href='{% url 'products' %}'">Découvrir maintenant</button>
     </div>
 </div>
 
@@ -490,21 +477,14 @@
             });
         });
 
-        // Gestion AJAX pour ajouter/retirer du panier
+        // Gestion AJAX pour ajouter au panier
         const forms = document.querySelectorAll('.form-product-ajax');
         forms.forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const button = form.querySelector('.cart-btn');
-                const action = button.getAttribute('data-action');
                 const formData = new FormData(form);
-
-                // Ajouter explicitement l’action dans FormData
-                formData.append('action', action);
-
-                console.log('Action:', action);
-                console.log('FormData:', Array.from(formData.entries()));
 
                 button.disabled = true;
                 button.classList.add('loading');
@@ -521,22 +501,11 @@
                 .then(data => {
                     console.log('Response:', data);
                     if (data.success) {
-                        if (action === 'remove') {
-                            button.classList.remove('remove-btn');
-                            button.classList.add('add-btn');
-                            button.setAttribute('data-action', 'add');
-                            button.innerHTML = '<i class="fas fa-shopping-cart"></i> Ajouter au panier';
-                        } else if (action === 'add') {
-                            button.classList.remove('add-btn');
-                            button.classList.add('remove-btn');
-                            button.setAttribute('data-action', 'remove');
-                            button.innerHTML = '<i class="fas fa-shopping-cart"></i> Retirer du panier';
-                        }
                         const cartCountElement = document.querySelector('.cart-count');
                         if (cartCountElement) {
                             cartCountElement.textContent = data.cart_count;
                         }
-                        // Supprimer l’alerte pour les succès
+                        form.querySelector('.qty-input').value = '1';
                     } else {
                         alert(data.message || 'Une erreur est survenue.');
                     }

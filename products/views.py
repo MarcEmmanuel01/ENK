@@ -77,52 +77,40 @@ def update_cart(request):
     product_id = request.POST.get('product_id')
     quantity = request.POST.get('quantity', 1)
     size = request.POST.get('size', 'M')
-    action = request.POST.get('action')  # Récupérer l’action (add/remove)
+    action = request.POST.get('action')  # Récupérer l’action (add uniquement ici)
 
     try:
+        if action != 'add':
+            return JsonResponse({'success': False, 'message': 'Action non supportée'}, status=400)
+
         cart, _ = Cart.objects.new_or_get(request)
         product = get_object_or_404(Product, id=product_id)
 
-        if action == 'add':
-            cart_item, created = CartItem.objects.get_or_create(
-                cart=cart,
-                product=product,
-                size=size
-            )
-            if created:
-                cart_item.quantity = int(quantity)
-            else:
-                cart_item.quantity += int(quantity)
-            cart_item.save()
-        elif action == 'remove':
-            cart_item = CartItem.objects.filter(
-                cart=cart,
-                product=product,
-                size=size
-            ).first()
-            if cart_item:
-                if cart_item.quantity > 1:
-                    cart_item.quantity -= 1
-                    cart_item.save()
-                else:
-                    cart_item.delete()
-            else:
-                return JsonResponse({'success': False, 'message': "Produit non trouvé dans le panier."}, status=404)
+        # Ajouter ou mettre à jour l'élément dans le panier avec la taille spécifiée
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart,
+            product=product,
+            size=size
+        )
+        if created:
+            cart_item.quantity = int(quantity)
         else:
-            return JsonResponse({'success': False, 'message': 'Action invalide'}, status=400)
+            cart_item.quantity += int(quantity)
+        cart_item.save()
 
         cart.update_totals()
         cart_count = cart.cart_items.count()
-        quantity = cart_item.quantity if cart_item and hasattr(cart_item, 'quantity') else 0
+        quantity = cart_item.quantity
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'success': True,
                 'cart_count': cart_count,
-                'quantity': quantity
+                'quantity': quantity,
+                'message': f"{quantity} x {product.title} (Taille: {size}) ajouté(s) au panier."
             })
         else:
-            messages.success(request, f"{quantity} x {product.title} ajouté(s) au panier." if action == 'add' else f"{product.title} retiré du panier.")
+            messages.success(request, f"{quantity} x {product.title} (Taille: {size}) ajouté(s) au panier.")
             return redirect(request.META.get('HTTP_REFERER', '/'))
 
     except Product.DoesNotExist:

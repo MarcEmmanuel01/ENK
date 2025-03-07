@@ -11,10 +11,10 @@
     text-align: left;
     display: inline-block;
     margin: 0px;
-    width: 100%;}
+    width: 100%;
+}
 
-
-    .title-line {
+.title-line {
     width: 100px;
     height: 4px;
 }
@@ -113,6 +113,7 @@
                                 <thead>
                                     <tr>
                                         <th>Produit</th>
+                                        <th class="text-end">Taille</th>
                                         <th class="text-end">Quantité</th>
                                         <th class="text-end">Prix</th>
                                     </tr>
@@ -121,6 +122,7 @@
                                     {% for item in cart_items %}
                                     <tr>
                                         <td>{{ item.product.title|truncatechars:25 }}</td>
+                                        <td class="text-end">{{ item.size|default:"N/A" }}</td>
                                         <td class="text-end">{{ item.quantity }}</td>
                                         <td class="text-end">{{ item.product.price|mul:item.quantity|floatformat:2 }} FCFA</td>
                                     </tr>
