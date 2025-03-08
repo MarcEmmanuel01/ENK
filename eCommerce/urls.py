@@ -13,7 +13,7 @@ urlpatterns = [
     path('products/', include('products.urls')),
     path('tags/', include('tags.urls')),
     path('search/', include('search.urls')),
-    path('cart/', include('carts.urls')),
+    path('carts/', include('carts.urls')),  # Changé de 'cart/' à 'carts/'
     path('admin/', admin.site.urls),
 ]
 

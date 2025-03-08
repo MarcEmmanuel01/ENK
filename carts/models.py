@@ -89,18 +89,6 @@ class CartItem(models.Model):
 
     get_total = get_total_item_price
 
-def post_save_cart_item_receiver(sender, instance, **kwargs):
-    if instance.cart.pk:
-        instance.cart.update_totals()
-
-post_save.connect(post_save_cart_item_receiver, sender=CartItem)
-
-def pre_save_cart_receiver(sender, instance, **kwargs):
-    if instance.pk and instance.subtotal != instance.total:
-        instance.total = instance.subtotal
-
-pre_save.connect(pre_save_cart_receiver, sender=Cart)
-
 class Order(models.Model):
     user = models.ForeignKey(
         User,
@@ -134,7 +122,12 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f"Commande {self.id} - {self.fullname}"
+        return f"Commande {self.order_identifier or self.id} - {self.fullname}"
+
+    def save(self, *args, **kwargs):
+        if not self.order_identifier and self.pk:
+            self.order_identifier = f"CMD{self.id:06d}"
+        super().save(*args, **kwargs)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
@@ -153,3 +146,15 @@ class OrderItem(models.Model):
     def __str__(self):
         size_str = f" (Taille: {self.size})" if self.size else ""
         return f"{self.quantity} x {self.product.title}{size_str} (Commande {self.order.id})"
+
+# Signaux pour mise à jour automatique
+def post_save_cart_item_receiver(sender, instance, **kwargs):
+    if instance.cart.pk:
+        instance.cart.update_totals()
+
+def pre_save_cart_receiver(sender, instance, **kwargs):
+    if instance.pk and instance.subtotal != instance.total:
+        instance.total = instance.subtotal
+
+post_save.connect(post_save_cart_item_receiver, sender=CartItem)
+pre_save.connect(pre_save_cart_receiver, sender=Cart)

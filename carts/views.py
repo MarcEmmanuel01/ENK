@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required, user_passes_test
 from products.models import Product
 from .models import Cart, CartItem, Order, OrderItem
 from django.utils.crypto import get_random_string
-from django.views.decorators.http import require_POST
 
 def cart_home(request):
     cart, _ = Cart.objects.new_or_get(request)
     cart_items = cart.cart_items.all()
-    print(f"Cart items: {list(cart_items.values('product__id', 'size', 'quantity'))}")
     return render(request, "carts/home.html", {'cart': cart, 'cart_items': cart_items})
 
 @require_POST
@@ -41,9 +41,8 @@ def add_to_cart(request):
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'success': True, 'quantity': cart_item.quantity})
-    else:
-        messages.success(request, f"{quantity} x {product.title} (Taille: {size}) ajouté(s) au panier.")
-        return redirect(request.META.get('HTTP_REFERER', '/'))
+    messages.success(request, f"{quantity} x {product.title} (Taille: {size}) ajouté(s) au panier.")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @require_POST
 def cart_update(request):
@@ -101,9 +100,8 @@ def clear_cart(request):
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'success': True})
-    else:
-        messages.success(request, "Le panier a été vidé.")
-        return redirect("cart_home")
+    messages.success(request, "Le panier a été vidé.")
+    return redirect("cart_home")
 
 def items_count(request):
     cart, _ = Cart.objects.new_or_get(request)
@@ -158,7 +156,7 @@ def place_order(request):
             district=district,
             address=address,
             notes=notes,
-            total_price=cart.total + 1000  # Frais de livraison fixes
+            total_price=cart.total  # Livraison gratuite, donc pas de frais supplémentaires
         )
 
         for item in cart_items:
@@ -167,7 +165,7 @@ def place_order(request):
                 product=item.product,
                 quantity=item.quantity,
                 price=item.get_total_item_price(),
-                size=item.size  # La taille est déjà nullable dans le modèle
+                size=item.size
             )
 
         cart_items.delete()
@@ -188,3 +186,31 @@ def order_confirmation(request):
     if request.user.is_authenticated:
         last_order = Order.objects.filter(user=request.user).order_by('-created_at').first()
     return render(request, "carts/order_confirmation.html", {"order": last_order})
+
+# Vues Admin
+def is_admin(user):
+    return user.is_authenticated and user.is_superuser
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_orders(request):
+    orders = Order.objects.all().order_by('-created_at')
+    return render(request, 'carts/admin_orders.html', {'orders': orders})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def update_order_status(request, order_id):
+    if request.method == 'POST':
+        order = Order.objects.get(id=order_id)
+        new_status = request.POST.get('status')
+        if new_status in ['pending', 'shipped', 'delivered']:
+            order.status = new_status
+            order.save()
+    return redirect('admin_orders')
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_order_detail(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order_items = order.items.all()
+    return render(request, 'carts/admin_order_detail.html', {'order': order, 'order_items': order_items})

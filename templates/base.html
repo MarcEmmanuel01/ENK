@@ -26,9 +26,8 @@
             color: #ffffff;
         }
         
-        /* Style pour la bannière défilante - Couleur modifiée */
         .marquee-container {
-            background-color: hsl(204, 97%, 55%); /* Changement de couleur (vert) */
+            background-color: hsl(204, 97%, 55%);
             color: #ffffff;
             padding: 8px 0;
             overflow: hidden;
@@ -49,13 +48,11 @@
             100% { transform: translateX(-100%); }
         }
         
-        /* Icône pour le texte défilant */
         .marquee-text i {
             color: #ffffff;
             margin-right: 10px;
         }
         
-        /* Style pour le panier */
         .cart-icon-container {
             position: relative;
             display: inline-block;
@@ -83,7 +80,6 @@
             font-weight: bold;
         }
         
-        /* Style pour la barre d'authentification */
         .auth-bar {
             background-color: #f8f9fa;
             padding: 8px 0;
@@ -92,9 +88,9 @@
         
         .auth-buttons {
             display: flex;
-            justify-content: space-between; /* Modifié: espace entre les boutons */
+            justify-content: space-between;
             align-items: center;
-            width: 100%; /* Pour occuper toute la largeur */
+            width: 100%;
         }
         
         .auth-btn {
@@ -116,7 +112,7 @@
             color: #fff;
             background-color: #6c757d;
             border: 1px solid #6c757d;
-            margin-left: auto; /* Pousse vers la gauche */
+            margin-left: auto;
         }
         
         .login-btn:hover {
@@ -129,7 +125,7 @@
             color: #fff;
             background-color: #007bff;
             border: 1px solid #007bff;
-            margin-right: auto; /* Pousse vers la droite */
+            margin-right: auto;
         }
         
         .register-btn:hover {
@@ -187,7 +183,8 @@
     {% url 'logout' as logout_url %}
     {% url 'register' as register_url %}
     {% url 'cart_home' as cart_url %}
-    
+    {% url 'admin_orders' as admin_orders_url %} <!-- Ajout pour les commandes -->
+
     <!-- Barre d'authentification dédiée -->
     <div class="auth-bar">
         <div class="container">
@@ -248,6 +245,11 @@
           <li class="nav-item {% if request.path == contact_url %}active{% endif %}">
             <a class="nav-link text-white" href="{% url 'contact' %}">Contact</a>
           </li>
+          {% if request.user.is_superuser %}
+          <li class="nav-item {% if request.path == admin_orders_url %}active{% endif %}">
+            <a class="nav-link text-white" href="{% url 'admin_orders' %}">Informations</a>
+          </li>
+          {% endif %}
         </ul>
     
         <!-- Barre de recherche et Panier -->
@@ -265,7 +267,7 @@
             <i class="fas fa-shopping-cart cart-icon" style="font-size: 1.5rem;"></i>
             <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {% if cart %}
-                {{ cart.cart_items.count }} <!-- Utiliser cart_items.count pour CartItem -->
+                {{ cart.cart_items.count }}
               {% else %}
                 0
               {% endif %}
@@ -279,20 +281,20 @@
     <style>
       @media (max-width: 768px) {
         .nav-link {
-          font-size: 0.9rem; /* Réduire la taille de la police */
-          padding: 0.5rem 0.75rem; /* Réduire le padding */
+          font-size: 0.9rem;
+          padding: 0.5rem 0.75rem;
         }
         .navbar-brand {
-          font-size: 1.2rem; /* Réduire la taille du logo */
+          font-size: 1.2rem;
         }
         .form-header {
-          max-width: 200px; /* Réduire la largeur de la barre de recherche */
+          max-width: 200px;
         }
         .form-control {
-          padding: 0.25rem 0.5rem; /* Réduire le padding du champ de recherche */
+          padding: 0.25rem 0.5rem;
         }
         .btn-light {
-          padding: 0.25rem 0.5rem; /* Réduire le padding du bouton de recherche */
+          padding: 0.25rem 0.5rem;
         }
         .auth-btn {
           padding: 5px 10px;
@@ -303,7 +305,6 @@
         }
       }
       
-      /* Pour les écrans très petits */
       @media (max-width: 576px) {
         .form-header {
           max-width: 140px;
@@ -320,38 +321,36 @@
     {% block content %}{% endblock content %}
 
     <style>
-        /* Section Rejoignez-nous */
         .join-section {
             border-top: 2px solid #ddd;
-            padding: 20px 0; /* Réduit de py-4 (32px) à 20px */
+            padding: 20px 0;
             background: #f8f9fa;
         }
         .join-section h2 {
-            font-size: 1.5rem; /* Réduit de 2rem à 1.5rem */
+            font-size: 1.5rem;
             color: #333;
             font-weight: bold;
-            margin-bottom: 10px; /* Réduit de 15px à 10px */
+            margin-bottom: 10px;
         }
         .join-section p {
-            font-size: 1rem; /* Réduit de 1.2rem à 1rem */
+            font-size: 1rem;
             color: #555;
             max-width: 500px;
-            margin-bottom: 10px; /* Réduit de 15px à 10px */
+            margin-bottom: 10px;
         }
         .join-section .btn {
-            font-size: 1rem; /* Réduit de 1.3rem à 1rem */
-            padding: 8px 20px; /* Réduit de px-4 py-2 à 8px 20px */
+            font-size: 1rem;
+            padding: 8px 20px;
             border-radius: 30px;
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Footer */
         #top-footer {
-            padding: 30px 0; /* Réduit de py-5 (40px) à 30px */
+            padding: 30px 0;
         }
         #top-footer h5 {
-            font-size: 1.1rem; /* Réduit pour compacité */
+            font-size: 1.1rem;
             margin-bottom: 10px;
         }
         #top-footer ul {
@@ -359,28 +358,27 @@
             padding: 0;
         }
         #top-footer li {
-            font-size: 0.9rem; /* Réduit pour compacité */
-            margin-bottom: 8px; /* Réduit de 10px à 8px */
+            font-size: 0.9rem;
+            margin-bottom: 8px;
         }
         #top-footer li i {
             margin-right: 8px;
         }
         #bottom-footer {
-            padding: 15px 0; /* Réduit de py-5 (40px) à 15px */
+            padding: 15px 0;
             background: #e9ecef;
         }
         #bottom-footer .copyright {
-            font-size: 0.85rem; /* Réduit pour compacité */
+            font-size: 0.85rem;
             color: #555;
         }
 
-        /* Responsive Design */
         @media (max-width: 767px) {
             .join-section {
-                padding: 15px 0; /* Encore plus compact sur mobile */
+                padding: 15px 0;
             }
             .join-section h2 {
-                font-size: 1.25rem; /* Réduit sur mobile */
+                font-size: 1.25rem;
             }
             .join-section p {
                 font-size: 0.9rem;
@@ -396,7 +394,7 @@
             }
             #top-footer .col-md-4,
             #top-footer .col-md-2 {
-                margin-bottom: 20px; /* Espacement entre sections empilées */
+                margin-bottom: 20px;
             }
             #top-footer h5 {
                 font-size: 1rem;
