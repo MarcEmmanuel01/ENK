@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commandes | CARDIGAN CI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="title-1">Commandes</h1>
+    <div class="title-line"></div>
+    <div class="dashboard-card">
+        <h5><i class="fas fa-shopping-cart me-2"></i>Toutes les Commandes</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_identifier|default:order.id }}</td>
+                        <td>{{ order.fullname }}</td>
+                        <td>{{ order.total_price|floatformat:2 }} FCFA</td>
+                        <td>{{ order.status|title }}</td>
+                        <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                        <td><a href="{% url 'admin_order_detail' order.id %}" class="btn btn-sm btn-primary">Détails</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">Aucune commande</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

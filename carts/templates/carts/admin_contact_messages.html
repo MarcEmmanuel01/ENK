@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Messages de Contact | CARDIGAN CI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="title-1">Messages de Contact</h1>
+    <div class="title-line"></div>
+    <div class="dashboard-card">
+        <h5><i class="fas fa-envelope me-2"></i>Messages de Contact</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in contact_messages %}
+                    <tr>
+                        <td>{{ message.name }}</td>
+                        <td>{{ message.email }}</td>
+                        <td>{{ message.message|truncatewords:10 }}</td>
+                        <td>{{ message.created_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4">Aucun message reçu</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,9 +3,12 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
+from accounts.models import User  # Votre modèle utilisateur personnalisé
 from products.models import Product
 from .models import Cart, CartItem, Order, OrderItem
 from django.utils.crypto import get_random_string
+from datetime import timedelta
+from django.utils import timezone
 
 def cart_home(request):
     cart, _ = Cart.objects.new_or_get(request)
@@ -156,7 +159,7 @@ def place_order(request):
             district=district,
             address=address,
             notes=notes,
-            total_price=cart.total  # Livraison gratuite, donc pas de frais supplémentaires
+            total_price=cart.total  # Livraison gratuite
         )
 
         for item in cart_items:
@@ -194,8 +197,46 @@ def is_admin(user):
 @login_required
 @user_passes_test(is_admin, login_url='home')
 def admin_orders(request):
+    # Cette vue devient le tableau de bord d'accueil
+    contact_messages = None
+    try:
+        from contact.models import ContactMessage
+        contact_messages = ContactMessage.objects.exists()  # Vérifie simplement si des messages existent
+    except (ImportError, AttributeError):
+        pass
+
+    context = {
+        'contact_messages': contact_messages,
+    }
+    return render(request, 'carts/admin_dashboard.html', context)
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_orders_list(request):
     orders = Order.objects.all().order_by('-created_at')
-    return render(request, 'carts/admin_orders.html', {'orders': orders})
+    return render(request, 'carts/admin_orders_list.html', {'orders': orders})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_clients(request):
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, 'carts/admin_clients.html', {'users': users})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_recent_logins(request):
+    recent_logins = User.objects.filter(last_login__gte=timezone.now() - timedelta(hours=24)).order_by('-last_login')
+    return render(request, 'carts/admin_recent_logins.html', {'recent_logins': recent_logins})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_contact_messages(request):
+    try:
+        from contact.models import ContactMessage
+        contact_messages = ContactMessage.objects.all().order_by('-created_at')
+    except (ImportError, AttributeError):
+        contact_messages = None
+    return render(request, 'carts/admin_contact_messages.html', {'contact_messages': contact_messages})
 
 @login_required
 @user_passes_test(is_admin, login_url='home')
@@ -206,7 +247,7 @@ def update_order_status(request, order_id):
         if new_status in ['pending', 'shipped', 'delivered']:
             order.status = new_status
             order.save()
-    return redirect('admin_orders')
+    return redirect('admin_orders_list')
 
 @login_required
 @user_passes_test(is_admin, login_url='home')

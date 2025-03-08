@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tableau de bord Admin | CARDIGAN CI{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --dark: #2d3748;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --radius: 10px;
+    }
+
+    .title-1 {
+        font-size: 1.5rem;
+        color: var(--dark);
+    }
+
+    .title-line {
+        width: 100px;
+        height: 4px;
+        background: var(--primary);
+        margin-bottom: 20px;
+    }
+
+    .dashboard-card {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-btn {
+        display: inline-block;
+        width: 100%;
+        max-width: 300px;
+        margin: 10px;
+        padding: 15px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+        background-color: var(--primary);
+        border-radius: var(--radius);
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="title-1">Tableau de bord Administrateur</div>
+    <div class="title-line"></div>
+
+    <div class="dashboard-card text-center">
+        <h5><i class="fas fa-tachometer-alt me-2"></i>Bienvenue dans votre tableau de bord</h5>
+        <p>Accédez aux différentes sections pour gérer votre site e-commerce.</p>
+
+        <div class="d-flex flex-wrap justify-content-center">
+            <a href="{% url 'admin_orders_list' %}" class="dashboard-btn">
+                <i class="fas fa-shopping-cart me-2"></i>Commandes
+            </a>
+            <a href="{% url 'admin_clients' %}" class="dashboard-btn">
+                <i class="fas fa-users me-2"></i>Clients
+            </a>
+            <a href="{% url 'admin_recent_logins' %}" class="dashboard-btn">
+                <i class="fas fa-sign-in-alt me-2"></i>Connexions Récentes
+            </a>
+            <a href="{% url 'admin_contact_messages' %}" class="dashboard-btn">
+                <i class="fas fa-envelope me-2"></i>Messages de Contact
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
